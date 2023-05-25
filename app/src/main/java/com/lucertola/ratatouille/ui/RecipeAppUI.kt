@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,14 +16,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.data.RecipesStore
 
 object RecipeAppUI {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun RecipeApp() {
-        val recipes = remember { mutableStateOf(listOf<Recipe>()) }
+    fun RecipeApp(context: Context) {
+        val recipesStore = RecipesStore(context)
         var showDialog by remember { mutableStateOf(false) }
+        val initialRecipes = recipesStore.getRecipes()
+        val recipes = remember { mutableStateOf(initialRecipes) }
         var selectedRecipe by remember { mutableStateOf<Recipe?>(null) }
+
+        val onAddRecipe: (Recipe) -> Unit = { recipe ->
+            recipes.value = recipes.value + recipe
+            recipesStore.saveRecipes(recipes.value)
+            showDialog = false
+        }
+
+        // When a recipe is deleted
+        val onDeleteRecipe: (Recipe) -> Unit = { recipeToDelete ->
+            recipes.value = recipes.value.filter { it != recipeToDelete }
+            recipesStore.saveRecipes(recipes.value)
+            selectedRecipe = null
+        }
+
 
         Column {
             TopAppBar(title = { Text("Recipes App") }, actions = {
@@ -35,20 +53,13 @@ object RecipeAppUI {
             })
             RecipesList(recipes.value) { recipe -> selectedRecipe = recipe }
             if (showDialog) {
-                AddRecipeDialog(onAddRecipe = { recipe ->
-                    // add recipe to recipes list
-                    recipes.value = recipes.value + recipe
-                    showDialog = false
-                }, onDismissRequest = { showDialog = false })
+                AddRecipeDialog(onAddRecipe = onAddRecipe, onDismissRequest = { showDialog = false })
             }
             selectedRecipe?.let {
-                RecipeDialog(
-                    recipe = it,
+                RecipeDialog(recipe = it,
                     onDismissRequest = { selectedRecipe = null },
-                    onDeleteRecipe = { recipeToDelete ->
-                        recipes.value = recipes.value.filter { it != recipeToDelete }
-                        selectedRecipe = null
-                    })
+                    onDeleteRecipe = onDeleteRecipe
+                )
             }
         }
     }
