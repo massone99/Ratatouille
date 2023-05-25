@@ -12,6 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 
+
+/**
+ * Returns a list of recipes.
+ * @param recipes The list of recipes to display.
+ * @param onViewRecipe The callback to invoke when a recipe is selected.
+ */
 @Composable
 fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
     LazyColumn {
@@ -21,6 +27,11 @@ fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
     }
 }
 
+/**
+ * Returns a single recipe.
+ * @param recipe The recipe to display.
+ * @param onViewRecipe The callback to invoke when a recipe is selected.
+ */
 @Composable
 fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
     Card(modifier = Modifier.padding(8.dp)) {

@@ -13,18 +13,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.lucertola.ratatouille.data.Recipe
 
+/**
+ * Return a RecipeDialog ( a view on a recipe ).
+ * @param recipe The recipe to display.
+ * @param onDismissRequest The callback to invoke when the dialog is dismissed.
+ * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
+ */
 @Composable
-fun RecipeDialog(recipe: Recipe, onDismissRequest: () -> Unit) {
+fun RecipeDialog(recipe: Recipe, onDismissRequest: () -> Unit, onDeleteRecipe: (Recipe) -> Unit) {
     AlertDialog(onDismissRequest = onDismissRequest,
         title = { Text(recipe.name) },
         text = { Text(recipe.description) },
+        // A button to dismiss the dialog.
         confirmButton = {
             Button(onClick = onDismissRequest) {
                 Text("OK")
             }
+        },
+        // A button to delete the recipe.
+        dismissButton = {
+            Button(onClick = { onDeleteRecipe(recipe) }) {
+                Text("Delete")
+            }
         })
 }
 
+/**
+ * Return a AddRecipeDialog ( a view to add a recipe ).
+ * @param onAddRecipe The callback to invoke when a recipe is added.
+ * @param onDismissRequest The callback to invoke when the dialog is dismissed.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecipeDialog(onAddRecipe: (Recipe) -> Unit, onDismissRequest: () -> Unit) {

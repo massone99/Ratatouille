@@ -42,7 +42,13 @@ object RecipeAppUI {
                 }, onDismissRequest = { showDialog = false })
             }
             selectedRecipe?.let {
-                RecipeDialog(recipe = it, onDismissRequest = { selectedRecipe = null })
+                RecipeDialog(
+                    recipe = it,
+                    onDismissRequest = { selectedRecipe = null },
+                    onDeleteRecipe = { recipeToDelete ->
+                        recipes.value = recipes.value.filter { it != recipeToDelete }
+                        selectedRecipe = null
+                    })
             }
         }
     }
