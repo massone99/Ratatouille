@@ -38,7 +38,7 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
         Column {
             Text(
                 text = recipe.name,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(8.dp)
             )
             Text(
@@ -46,6 +46,13 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(8.dp)
             )
+            Text(
+                text = recipe.ingredients.joinToString(", "),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+
+
             Button(onClick = { onViewRecipe(recipe) }, modifier = Modifier.padding(8.dp)) {
                 Text("View Recipe")
             }

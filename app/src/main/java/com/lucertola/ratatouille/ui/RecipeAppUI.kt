@@ -43,7 +43,7 @@ object RecipeAppUI {
 
 
         Column {
-            TopAppBar(title = { Text("Recipes App") }, actions = {
+            TopAppBar(title = { Text("Ratatouille") }, actions = {
                 IconButton(onClick = { /* Handle refresh action here */ }) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
                 }
@@ -56,7 +56,7 @@ object RecipeAppUI {
                 AddRecipeDialog(onAddRecipe = onAddRecipe, onDismissRequest = { showDialog = false })
             }
             selectedRecipe?.let {
-                RecipeDialog(recipe = it,
+                ViewRecipeDialog(recipe = it,
                     onDismissRequest = { selectedRecipe = null },
                     onDeleteRecipe = onDeleteRecipe
                 )

@@ -20,10 +20,22 @@ import com.lucertola.ratatouille.data.Recipe
  * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
  */
 @Composable
-fun RecipeDialog(recipe: Recipe, onDismissRequest: () -> Unit, onDeleteRecipe: (Recipe) -> Unit) {
+fun ViewRecipeDialog(
+    recipe: Recipe,
+    onDismissRequest: () -> Unit,
+    onDeleteRecipe: (Recipe) -> Unit
+) {
     AlertDialog(onDismissRequest = onDismissRequest,
         title = { Text(recipe.name) },
-        text = { Text(recipe.description) },
+        text = {
+            Column {
+                Text("Descrizione:")
+                Text(recipe.description)
+                Text("\n")
+                Text("Ingredienti:")
+                Text(recipe.ingredients.joinToString(", "))
+            }
+        },
         // A button to dismiss the dialog.
         confirmButton = {
             Button(onClick = onDismissRequest) {
@@ -62,7 +74,7 @@ fun AddRecipeDialog(onAddRecipe: (Recipe) -> Unit, onDismissRequest: () -> Unit)
         }
     }, confirmButton = {
         Button(onClick = {
-            onAddRecipe(Recipe(name, description))
+            onAddRecipe(Recipe(name, description, ingredients.split(",")))
         }) {
             Text("Add")
         }
