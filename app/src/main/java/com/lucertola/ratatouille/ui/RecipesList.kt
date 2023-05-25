@@ -12,33 +12,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 
-object RecipesList {
-    @Composable
-    fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
-        LazyColumn {
-            items(recipes.size) { index ->
-                RecipeItem(recipes[index], onViewRecipe)
-            }
+@Composable
+fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
+    LazyColumn {
+        items(recipes.size) { index ->
+            RecipeItem(recipes[index], onViewRecipe)
         }
     }
+}
 
-    @Composable
-    fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
-        Card(modifier = Modifier.padding(8.dp)) {
-            Column {
-                Text(
-                    text = recipe.name,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = recipe.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Button(onClick = { onViewRecipe(recipe) }, modifier = Modifier.padding(8.dp)) {
-                    Text("View Recipe")
-                }
+@Composable
+fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
+    Card(modifier = Modifier.padding(8.dp)) {
+        Column {
+            Text(
+                text = recipe.name,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = recipe.description,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+            Button(onClick = { onViewRecipe(recipe) }, modifier = Modifier.padding(8.dp)) {
+                Text("View Recipe")
             }
         }
     }
