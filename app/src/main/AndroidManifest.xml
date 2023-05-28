@@ -15,7 +15,7 @@
         <activity
             android:name=".model.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:fitsSystemWindows="true"
             android:theme="@style/Theme.Ratatouille">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

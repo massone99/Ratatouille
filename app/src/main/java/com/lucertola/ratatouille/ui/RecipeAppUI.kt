@@ -23,7 +23,8 @@ object RecipeAppUI {
     @Composable
     fun RecipeApp(context: Context) {
         val recipesStore = RecipesStore(context)
-        var showDialog by remember { mutableStateOf(false) }
+        var showAddDialog by remember { mutableStateOf(false) }
+        var showEditDialog by remember { mutableStateOf(false) }
         val initialRecipes = recipesStore.getRecipes()
         val recipes = remember { mutableStateOf(initialRecipes) }
         var selectedRecipe by remember { mutableStateOf<Recipe?>(null) }
@@ -31,35 +32,62 @@ object RecipeAppUI {
         val onAddRecipe: (Recipe) -> Unit = { recipe ->
             recipes.value = recipes.value + recipe
             recipesStore.saveRecipes(recipes.value)
-            showDialog = false
+            showAddDialog = false
         }
 
-        // When a recipe is deleted
         val onDeleteRecipe: (Recipe) -> Unit = { recipeToDelete ->
             recipes.value = recipes.value.filter { it != recipeToDelete }
             recipesStore.saveRecipes(recipes.value)
             selectedRecipe = null
         }
 
+        val onEditRecipe: (Recipe) -> Unit = { editedRecipe ->
+            selectedRecipe?.let { originalRecipe ->
+                val index = recipes.value.indexOf(originalRecipe)
+                if (index != -1) {
+                    val updatedRecipes = recipes.value.toMutableList()
+                    updatedRecipes[index] = editedRecipe
+                    recipes.value = updatedRecipes
+                    recipesStore.saveRecipes(recipes.value)
+                    showEditDialog = false
+                    selectedRecipe = null
+                }
+            }
+        }
 
         Column {
             TopAppBar(title = { Text("Ratatouille") }, actions = {
                 IconButton(onClick = { /* Handle refresh action here */ }) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
                 }
-                IconButton(onClick = { showDialog = true }) {
+                IconButton(onClick = { showAddDialog = true }) {
                     Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
             })
-            RecipesList(recipes.value) { recipe -> selectedRecipe = recipe }
-            if (showDialog) {
-                AddRecipeDialog(onAddRecipe = onAddRecipe, onDismissRequest = { showDialog = false })
+            RecipesList(recipes.value) { recipe ->
+                // if i click on a RecupeItem, the selectedRecipe is set to the recipe
+                selectedRecipe = recipe
             }
-            selectedRecipe?.let {
-                ViewRecipeDialog(recipe = it,
+            if (showAddDialog) {
+                AddRecipeDialog(onAddRecipe = onAddRecipe,
+                    onDismissRequest = { showAddDialog = false })
+            }
+            if (showEditDialog) {
+                selectedRecipe?.let { recipe ->
+                    EditRecipeDialog(recipe = recipe,
+                        onEditRecipe = onEditRecipe,
+                        onDismissRequest = { showEditDialog = false })
+                }
+            }
+            if (!showEditDialog && selectedRecipe != null) {
+                ViewRecipeDialog(recipe = selectedRecipe!!,
+                    // when exit from the ViewRecipeDialog, the selectedRecipe is set to null so that
+                    // no recipe is selected
                     onDismissRequest = { selectedRecipe = null },
-                    onDeleteRecipe = onDeleteRecipe
-                )
+                    onDeleteRecipe = onDeleteRecipe,
+                    onEditRecipe = { recipe ->
+                        showEditDialog = true
+                    })
             }
         }
     }

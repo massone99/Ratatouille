@@ -1,6 +1,7 @@
 package com.lucertola.ratatouille.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +24,11 @@ import com.lucertola.ratatouille.data.Recipe
 fun ViewRecipeDialog(
     recipe: Recipe,
     onDismissRequest: () -> Unit,
-    onDeleteRecipe: (Recipe) -> Unit
+    onDeleteRecipe: (Recipe) -> Unit,
+    onEditRecipe: (Recipe) -> Unit
 ) {
-    AlertDialog(onDismissRequest = onDismissRequest,
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
         title = { Text(recipe.name) },
         text = {
             Column {
@@ -36,18 +39,23 @@ fun ViewRecipeDialog(
                 Text(recipe.ingredients.joinToString(", "))
             }
         },
-        // A button to dismiss the dialog.
+        // Buttons for edit, delete, and dismiss actions.
         confirmButton = {
             Button(onClick = onDismissRequest) {
                 Text("OK")
             }
         },
-        // A button to delete the recipe.
         dismissButton = {
-            Button(onClick = { onDeleteRecipe(recipe) }) {
-                Text("Delete")
+            Row {
+                Button(onClick = { onEditRecipe(recipe) }) {
+                    Text("Edit")
+                }
+                Button(onClick = { onDeleteRecipe(recipe) }) {
+                    Text("Delete")
+                }
             }
-        })
+        }
+    )
 }
 
 /**
@@ -84,3 +92,40 @@ fun AddRecipeDialog(onAddRecipe: (Recipe) -> Unit, onDismissRequest: () -> Unit)
         }
     })
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditRecipeDialog(
+    recipe: Recipe,
+    onEditRecipe: (Recipe) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    var name by remember { mutableStateOf(recipe.name) }
+    var description by remember { mutableStateOf(recipe.description) }
+    var ingredients by remember { mutableStateOf(recipe.ingredients.joinToString(",")) }
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text("Edit recipe") },
+        text = {
+            Column {
+                OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
+                OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") })
+                OutlinedTextField(value = ingredients, onValueChange = { ingredients = it }, label = { Text("Ingredients") })
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onEditRecipe(Recipe(name, description, ingredients.split(",")))
+            }) {
+                Text("Edit")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismissRequest) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
