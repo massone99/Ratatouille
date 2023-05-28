@@ -1,5 +1,8 @@
 package com.lucertola.ratatouille.ui
 
+import AddRecipePage
+import EditRecipePage
+import ViewRecipePage
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
@@ -11,11 +14,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.lucertola.ratatouille.data.Recipe
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.lucertola.ratatouille.data.RecipesStore
 
 object RecipeAppUI {
@@ -23,71 +26,65 @@ object RecipeAppUI {
     @Composable
     fun RecipeApp(context: Context) {
         val recipesStore = RecipesStore(context)
-        var showAddDialog by remember { mutableStateOf(false) }
-        var showEditDialog by remember { mutableStateOf(false) }
         val initialRecipes = recipesStore.getRecipes()
-        val recipes = remember { mutableStateOf(initialRecipes) }
-        var selectedRecipe by remember { mutableStateOf<Recipe?>(null) }
-
-        val onAddRecipe: (Recipe) -> Unit = { recipe ->
-            recipes.value = recipes.value + recipe
-            recipesStore.saveRecipes(recipes.value)
-            showAddDialog = false
-        }
-
-        val onDeleteRecipe: (Recipe) -> Unit = { recipeToDelete ->
-            recipes.value = recipes.value.filter { it != recipeToDelete }
-            recipesStore.saveRecipes(recipes.value)
-            selectedRecipe = null
-        }
-
-        val onEditRecipe: (Recipe) -> Unit = { editedRecipe ->
-            selectedRecipe?.let { originalRecipe ->
-                val index = recipes.value.indexOf(originalRecipe)
-                if (index != -1) {
-                    val updatedRecipes = recipes.value.toMutableList()
-                    updatedRecipes[index] = editedRecipe
-                    recipes.value = updatedRecipes
-                    recipesStore.saveRecipes(recipes.value)
-                    showEditDialog = false
-                    selectedRecipe = null
-                }
-            }
-        }
+        val navController = rememberNavController()
 
         Column {
             TopAppBar(title = { Text("Ratatouille") }, actions = {
                 IconButton(onClick = { /* Handle refresh action here */ }) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
                 }
-                IconButton(onClick = { showAddDialog = true }) {
+                IconButton(onClick = { navController.navigate("add") }) {
                     Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
             })
-            RecipesList(recipes.value) { recipe ->
-                // if i click on a RecupeItem, the selectedRecipe is set to the recipe
-                selectedRecipe = recipe
-            }
-            if (showAddDialog) {
-                AddRecipeDialog(onAddRecipe = onAddRecipe,
-                    onDismissRequest = { showAddDialog = false })
-            }
-            if (showEditDialog) {
-                selectedRecipe?.let { recipe ->
-                    EditRecipeDialog(recipe = recipe,
-                        onEditRecipe = onEditRecipe,
-                        onDismissRequest = { showEditDialog = false })
+
+            NavHost(navController, startDestination = "recipes") {
+                composable("recipes") {
+                    RecipesList(initialRecipes) { recipe ->
+                        navController.navigate("view/${recipe.name}")
+                    }
                 }
-            }
-            if (!showEditDialog && selectedRecipe != null) {
-                ViewRecipeDialog(recipe = selectedRecipe!!,
-                    // when exit from the ViewRecipeDialog, the selectedRecipe is set to null so that
-                    // no recipe is selected
-                    onDismissRequest = { selectedRecipe = null },
-                    onDeleteRecipe = onDeleteRecipe,
-                    onEditRecipe = { recipe ->
-                        showEditDialog = true
+                composable("add") {
+                    AddRecipePage(onAddRecipe = {
+                        // Handle adding recipe and go back to list.
+                        navController.navigate("recipes")
+                    }, onDismissRequest = {
+                        navController.navigate("recipes")
                     })
+                }
+                composable(
+                    "view/{recipeName}",
+                    arguments = listOf(navArgument("recipeName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val recipeName = backStackEntry.arguments?.getString("recipeName")
+                    val recipe = initialRecipes.find { it.name == recipeName }
+                    recipe?.let {
+                        ViewRecipePage(recipe = it, onDeleteRecipe = {
+                            // Handle deletion and go back to list.
+                            navController.navigate("recipes")
+                        }, onEditRecipe = { recipe ->
+                            navController.navigate("edit/${recipe.name}")
+                        }, onDismissRequest = {
+                            navController.navigate("recipes")
+                        })
+                    }
+                }
+                composable(
+                    "edit/{recipeName}",
+                    arguments = listOf(navArgument("recipeName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val recipeName = backStackEntry.arguments?.getString("recipeName")
+                    val recipe = initialRecipes.find { it.name == recipeName }
+                    recipe?.let {
+                        EditRecipePage(recipe = it, onEditRecipe = {
+                            // Handle editing and go back to list.
+                            navController.navigate("recipes")
+                        }, onDismissRequest = {
+                            navController.navigate("recipes")
+                        })
+                    }
+                }
             }
         }
     }
