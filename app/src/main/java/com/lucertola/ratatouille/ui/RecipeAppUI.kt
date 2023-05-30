@@ -20,8 +20,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.data.RecipesStore
+import com.lucertola.ratatouille.ui.pages.AddRecipePage.AddRecipePage
+import com.lucertola.ratatouille.ui.pages.EditRecipePage.EditRecipePage
+import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
 
 const val HOME = "RecipesListPage"
+const val VIEW_RECIPE = "ViewRecipePage"
+const val ADD_RECIPE = "AddRecipePage"
+const val EDIT_RECIPE = "EditRecipePage"
 
 object RecipeAppUI {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +42,7 @@ object RecipeAppUI {
         val onAddRecipe: (Recipe) -> Unit = { recipe ->
             recipes.value = recipes.value + recipe
             recipesStore.saveRecipes(recipes.value)
+            navController.navigate(HOME)
         }
 
         val onDeleteRecipe: (Recipe) -> Unit = { recipeToDelete ->
@@ -56,13 +63,14 @@ object RecipeAppUI {
                     selectedRecipe = null
                 }
             }
+            navController.navigate(HOME)
         }
         Column {
             TopAppBar(title = { Text("Ratatouille") }, actions = {
                 IconButton(onClick = { /* Handle refresh action here */ }) {
                     Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
                 }
-                IconButton(onClick = { navController.navigate("AddRecipePage") }) {
+                IconButton(onClick = { navController.navigate(ADD_RECIPE) }) {
                     Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
             })
@@ -70,16 +78,23 @@ object RecipeAppUI {
                 composable(HOME) {
                     RecipesList(recipes.value) { recipe ->
                         selectedRecipe = recipe
-                        navController.navigate("ViewRecipePage")
+                        navController.navigate(VIEW_RECIPE)
                     }
                 }
-                composable("ViewRecipePage") {
+                composable(VIEW_RECIPE) {
                     selectedRecipe?.let { recipe ->
-                        ViewRecipePage(recipe, navController, onDeleteRecipe, onEditRecipe)
+                        ViewRecipePage(recipe, navController, onDeleteRecipe) {
+                            navController.navigate(EDIT_RECIPE)
+                        }
                     }
                 }
-                composable("AddRecipePage") {
+                composable(ADD_RECIPE) {
                     AddRecipePage(navController, onAddRecipe)
+                }
+                composable(EDIT_RECIPE) {
+                    selectedRecipe?.let { recipe ->
+                        EditRecipePage(recipe, navController, onEditRecipe)
+                    }
                 }
             }
 
