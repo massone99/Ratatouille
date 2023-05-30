@@ -30,6 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.data.RecipesStore
+import com.lucertola.ratatouille.ui.RecipesList.RecipesList
 import com.lucertola.ratatouille.ui.ShoppingPage.ShoppingPage
 import com.lucertola.ratatouille.ui.pages.AddRecipePage.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage.EditRecipePage

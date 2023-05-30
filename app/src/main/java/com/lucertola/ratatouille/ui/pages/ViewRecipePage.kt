@@ -29,9 +29,7 @@ object ViewRecipePage {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ViewRecipePage(
-        recipe: Recipe,
-        onDeleteRecipe: (Recipe) -> Unit,
-        onEditRecipe: (Recipe) -> Unit
+        recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
     ) {
         Scaffold(content = {
             Column(modifier = Modifier.padding(it)) {
@@ -57,8 +55,8 @@ object ViewRecipePage {
                         Text("\n")
                         Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
                         Text(recipe.ingredients.map {
-                                it.trim()
-                            }.joinToString(separator = "\n") { "- $it" },
+                            it.trim()
+                        }.joinToString(separator = "\n") { "- $it" },
                             style = MaterialTheme.typography.bodyMedium
                         )
 

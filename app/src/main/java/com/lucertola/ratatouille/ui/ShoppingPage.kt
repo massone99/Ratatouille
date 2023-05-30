@@ -51,12 +51,6 @@ object ShoppingPage {
                                 modifier = Modifier.padding(vertical = 16.dp)
                             )
                         }
-                        Button(
-                            onClick = { /* Handle shopping action */ },
-                            modifier = Modifier.align(Alignment.End)
-                        ) {
-                            Text(text = "Go Shopping")
-                        }
                     }
                 }
             }

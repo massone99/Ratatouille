@@ -60,7 +60,7 @@ object AddRecipePage {
                             "Aggiungi una nuova ricetta",
                             style = MaterialTheme.typography.headlineMedium
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(padding))
                         OutlinedTextField(modifier = Modifier.padding(padding),
                             value = name,
                             onValueChange = { name = it },

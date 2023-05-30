@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,19 +50,20 @@ object EditRecipePage {
                         enabled = true, state = rememberScrollState()
                     )
             ) {
-                TopAppBar(title = { Text("Modifica ricetta") }, navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                    }
-                })
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Card(modifier = Modifier.padding(8.dp)) {
                         val padding = 16.dp
                         Column(
+                            modifier = Modifier.padding(padding),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
+                            Text(
+                                "Modifica la ricetta",
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                            Spacer(modifier = Modifier.height(padding))
                             OutlinedTextField(modifier = Modifier.padding(padding),
                                 value = name,
                                 onValueChange = { name = it },
