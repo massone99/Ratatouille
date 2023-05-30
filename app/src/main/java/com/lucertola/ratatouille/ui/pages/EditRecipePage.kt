@@ -57,7 +57,7 @@ object EditRecipePage {
                             label = { Text("Ingredients") })
 
                         Button(onClick = {
-                            onEditRecipe(Recipe(name, description, ingredients.split(",")))
+                            onEditRecipe(Recipe(name, description, ingredients.split(",").map { it.trim() }))
                         }) {
                             Text("Confirm")
                         }

@@ -1,6 +1,7 @@
 package com.lucertola.ratatouille.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -63,7 +64,8 @@ object RecipeAppUI {
                     selectedRecipe = null
                 }
             }
-            navController.navigate(HOME)
+            selectedRecipe = editedRecipe
+            navController.popBackStack()
         }
         Column {
             TopAppBar(title = { Text("Ratatouille") }, actions = {

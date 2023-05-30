@@ -1,19 +1,22 @@
 package com.lucertola.ratatouille.ui.pages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
 
@@ -32,27 +35,46 @@ object ViewRecipePage {
         onDeleteRecipe: (Recipe) -> Unit,
         onEditRecipe: (Recipe) -> Unit
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(recipe.name) },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = null)
+        Scaffold(content = {
+            Column(modifier = Modifier.padding(it)) {
+                Card(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(1f)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(1f),
+                    ) {
+                        // add a text with name and h1
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
                         }
-                    }
-                )
-            },
-            content = {
-                Column(modifier = Modifier.padding(it)) {
-                    Column {
-                        Text("Descrizione:")
+                        Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
                         Text(recipe.description)
                         Text("\n")
-                        Text("Ingredienti:")
-                        Text(recipe.ingredients.joinToString(", "))
+                        Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
+                        Text(recipe.ingredients.map {
+                                it.trim()
+                            }.joinToString(separator = "\n") { "- $it" },
+                            style = MaterialTheme.typography.bodyMedium
+                        )
 
-                        Row {
+                        // add some space between the text and the buttons
+                        Spacer(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .height(8.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
                             Button(onClick = { onEditRecipe(recipe) }) {
                                 Text("Edit")
                             }
@@ -61,9 +83,10 @@ object ViewRecipePage {
                             }
                         }
                     }
+
                 }
             }
-        )
+        })
     }
 
 }
