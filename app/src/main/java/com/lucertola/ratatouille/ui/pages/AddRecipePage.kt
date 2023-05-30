@@ -1,10 +1,18 @@
 package com.lucertola.ratatouille.ui.pages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.HOME
@@ -35,47 +45,63 @@ object AddRecipePage {
         var description by remember { mutableStateOf("") }
         var ingredients by remember { mutableStateOf("") }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Add a new recipe") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                        }
+        Scaffold(content = {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxWidth(1f)
+                    .verticalScroll(
+                        enabled = true, state = rememberScrollState()
+                    ),
+            ) {
+                TopAppBar(title = { Text("Add a new recipe") }, navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
                     }
-                )
-            },
-            content = {
-                Column(modifier = Modifier.padding(it)) {
-                    Column {
-                        OutlinedTextField(
+                })
+                Card(modifier = Modifier.padding(8.dp)) {
+                    val padding = 16.dp
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        OutlinedTextField(modifier = Modifier.padding(padding),
                             value = name,
                             onValueChange = { name = it },
                             label = { Text("Name") })
-                        OutlinedTextField(
+                        OutlinedTextField(modifier = Modifier.padding(padding),
                             value = description,
                             onValueChange = { description = it },
                             label = { Text("Description") })
-                        OutlinedTextField(
+                        OutlinedTextField(modifier = Modifier.padding(padding),
                             value = ingredients,
                             onValueChange = { ingredients = it },
                             label = { Text("Ingredients") })
 
-                        Button(onClick = {
-                            onAddRecipe(Recipe(name, description, ingredients.split("\n").map { it.trim() }.filter { it.isNotEmpty() }))
-                            navController.navigate(HOME)
-                        }) {
-                            Text("Add")
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Button(onClick = {
+                                onAddRecipe(Recipe(name,
+                                    description,
+                                    ingredients.split("\n").map { it.trim() }
+                                        .filter { it.isNotEmpty() })
+                                )
+                                navController.navigate(HOME)
+                            }) {
+                                Text("Add")
+                            }
+                            Button(onClick = { navController.navigateUp() }) {
+                                Text("Cancel")
+                            }
                         }
-
-                        Button(onClick = { navController.navigateUp() }) {
-                            Text("Cancel")
-                        }
+                        Spacer(
+                            Modifier.height(16.dp)
+                        )
                     }
                 }
             }
-        )
+        })
     }
 
 }
