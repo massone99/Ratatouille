@@ -9,17 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,28 +50,29 @@ object AddRecipePage {
                         enabled = true, state = rememberScrollState()
                     ),
             ) {
-                TopAppBar(title = { Text("Add a new recipe") }, navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                    }
-                })
                 Card(modifier = Modifier.padding(8.dp)) {
                     val padding = 16.dp
                     Column(
+                        modifier = Modifier.padding(padding),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Text(
+                            "Aggiungi una nuova ricetta",
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                         OutlinedTextField(modifier = Modifier.padding(padding),
                             value = name,
                             onValueChange = { name = it },
-                            label = { Text("Name") })
+                            label = { Text("Nome") })
                         OutlinedTextField(modifier = Modifier.padding(padding),
                             value = description,
                             onValueChange = { description = it },
-                            label = { Text("Description") })
+                            label = { Text("Descrizione") })
                         OutlinedTextField(modifier = Modifier.padding(padding),
                             value = ingredients,
                             onValueChange = { ingredients = it },
-                            label = { Text("Ingredients") })
+                            label = { Text("Ingredienti") })
 
                         Row(
                             modifier = Modifier.fillMaxWidth(1f),
@@ -103,5 +100,4 @@ object AddRecipePage {
             }
         })
     }
-
 }
