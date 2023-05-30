@@ -1,7 +1,6 @@
 package com.lucertola.ratatouille.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -85,7 +84,7 @@ object RecipeAppUI {
                 }
                 composable(VIEW_RECIPE) {
                     selectedRecipe?.let { recipe ->
-                        ViewRecipePage(recipe, navController, onDeleteRecipe) {
+                        ViewRecipePage(recipe, onDeleteRecipe) {
                             navController.navigate(EDIT_RECIPE)
                         }
                     }

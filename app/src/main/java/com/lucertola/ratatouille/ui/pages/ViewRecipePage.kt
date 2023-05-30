@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
 
 object ViewRecipePage {
@@ -31,7 +30,6 @@ object ViewRecipePage {
     @Composable
     fun ViewRecipePage(
         recipe: Recipe,
-        navController: NavController,
         onDeleteRecipe: (Recipe) -> Unit,
         onEditRecipe: (Recipe) -> Unit
     ) {

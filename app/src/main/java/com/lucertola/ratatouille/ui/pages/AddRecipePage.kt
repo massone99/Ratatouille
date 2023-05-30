@@ -63,7 +63,7 @@ object AddRecipePage {
                             label = { Text("Ingredients") })
 
                         Button(onClick = {
-                            onAddRecipe(Recipe(name, description, ingredients.split(",")))
+                            onAddRecipe(Recipe(name, description, ingredients.split("\n").map { it.trim() }.filter { it.isNotEmpty() }))
                             navController.navigate(HOME)
                         }) {
                             Text("Add")
