@@ -58,7 +58,7 @@ fun RecipeForm(
                     onValueChange = { description = it },
                     label = { Text("Descrizione") })
 
-                for (ingredientField in ingredientsFields) {
+                for ((index, ingredientField) in ingredientsFields.withIndex()) {
                     var (ingredientName, ingredientGrams) = ingredientField.value
                     Row(
                         modifier = Modifier.width(310.dp),
@@ -96,6 +96,11 @@ fun RecipeForm(
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
+                        Button(onClick = {
+                            ingredientsFields = ingredientsFields.filterIndexed { i, _ -> i != index }
+                        }) {
+                            Text("X")
+                        }
                     }
                 }
 
