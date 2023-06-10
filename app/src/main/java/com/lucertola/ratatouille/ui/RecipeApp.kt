@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -115,23 +116,23 @@ object RecipeApp {
                 val currentRoute = currentRoute(navController)
                 BottomNavigationItem(icon = {
                     Icon(
-                        Icons.Filled.Home,
-                        contentDescription = "Home"
+                        Icons.Filled.Home, contentDescription = "Home"
                     )
-                },
-                    selected = currentRoute == HOME,
-                    onClick = { navController.navigate(HOME) })
+                }, selected = currentRoute == HOME, onClick = { navController.navigate(HOME) })
                 BottomNavigationItem(icon = {
                     Icon(
-                        Icons.Filled.ShoppingCart,
-                        contentDescription = "Shopping"
+                        Icons.Filled.ShoppingCart, contentDescription = "Shopping"
                     )
                 },
                     selected = currentRoute == SHOPPING_PAGE,
                     onClick = { navController.navigate(SHOPPING_PAGE) })
             }
         }) {
-            Column(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxWidth(1f)
+            ) {
                 NavHost(navController = navController, startDestination = HOME) {
                     composable(HOME) {
                         RecipesList(recipes.value) { recipe ->

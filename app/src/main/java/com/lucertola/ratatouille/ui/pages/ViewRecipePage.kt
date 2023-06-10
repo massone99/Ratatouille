@@ -32,7 +32,7 @@ object ViewRecipePage {
         recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
     ) {
         Scaffold(content = {
-            Column(modifier = Modifier.padding(it)) {
+            Column(modifier = Modifier.padding(it).fillMaxWidth(1f)) {
                 Card(
                     modifier = Modifier
                         .padding(16.dp)
