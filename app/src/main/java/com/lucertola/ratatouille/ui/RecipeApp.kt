@@ -2,6 +2,7 @@ package com.lucertola.ratatouille.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -23,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -69,7 +71,6 @@ object RecipeApp {
             selectedRecipe = null
             navController.navigate(HOME)
         }
-
         val onEditRecipe: (Recipe) -> Unit = { editedRecipe ->
             selectedRecipe?.let { originalRecipe ->
                 val index = recipes.value.indexOf(originalRecipe)
@@ -84,6 +85,8 @@ object RecipeApp {
             selectedRecipe = editedRecipe
             navController.popBackStack()
         }
+
+
         Scaffold(
 
             topBar = {
@@ -99,11 +102,23 @@ object RecipeApp {
                 })
             },
             bottomBar = {
+                val backgroundColor = if (isSystemInDarkTheme()) {
+                    Color.Black // Set dark theme color
+                } else {
+                    Color.White // Set light theme color
+                }
+
+                val contentColor = if (isSystemInDarkTheme()) {
+                    Color.White // Set dark theme color
+                } else {
+                    Color.Black // Set light theme color
+                }
+
                 BottomNavigation(
-                    // set brown for background color
-                    backgroundColor = PastelYellowBackground,
-                    contentColor = PastelYellowOnSurface
+                    backgroundColor = backgroundColor,
+                    contentColor = contentColor
                 ) {
+                    // by default the current route is HOME
                     val currentRoute = currentRoute(navController)
                     BottomNavigationItem(
                         icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },

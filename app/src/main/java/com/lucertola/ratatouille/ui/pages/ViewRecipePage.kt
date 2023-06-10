@@ -54,11 +54,17 @@ object ViewRecipePage {
                         Text(recipe.description)
                         Text("\n")
                         Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
+
+                        Text(recipe.ingredientsToGrams.map { it.first }.joinToString { "- $it" },
+                            style = MaterialTheme.typography.bodySmall)
+
+                        /*
                         Text(recipe.ingredients.map {
                             it.trim()
                         }.joinToString(separator = "\n") { "- $it" },
                             style = MaterialTheme.typography.bodyMedium
                         )
+*/
 
                         // add some space between the text and the buttons
                         Spacer(
