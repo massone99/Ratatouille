@@ -27,6 +27,7 @@ fun RecipeForm(
 ) {
     var name by remember { mutableStateOf(recipe.name) }
     var description by remember { mutableStateOf(recipe.description) }
+    var ingredientsFields by remember { mutableStateOf(recipe.ingredientsToGrams.map { mutableStateOf(it) }) }
     var ingredientName by remember { mutableStateOf("") }
     var ingredientGrams by remember { mutableStateOf("") }
 
@@ -56,48 +57,65 @@ fun RecipeForm(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Descrizione") })
-                Row(
-                    modifier = Modifier.width(310.dp),
-                ) {
-                    OutlinedTextField(modifier = Modifier
-                        .padding(padding)
-                        .weight(1f)
-                        .fillMaxHeight(),
-                        value = ingredientName,
-                        onValueChange = { ingredientName = it },
-                        label = {
-                            Text(
-                                "Ingrediente", style =
-                                MaterialTheme.typography.bodySmall
-                            )
-                        })
-                    OutlinedTextField(
-                        modifier = Modifier
+
+                for (ingredientField in ingredientsFields) {
+                    var (ingredientName, ingredientGrams) = ingredientField.value
+                    Row(
+                        modifier = Modifier.width(310.dp),
+                    ) {
+                        OutlinedTextField(modifier = Modifier
                             .padding(padding)
                             .weight(1f)
                             .fillMaxHeight(),
-                        value = ingredientGrams,
-                        onValueChange = { ingredientGrams = it },
-                        label = {
-                            Text(
-                                "Grammi", style =
-                                MaterialTheme.typography.bodySmall
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
+                            value = ingredientName,
+                            onValueChange = { newValue ->
+                                ingredientName = newValue
+                                ingredientField.value = ingredientName to ingredientGrams
+                            },
+                            label = {
+                                Text(
+                                    "Ingrediente", style =
+                                    MaterialTheme.typography.bodySmall
+                                )
+                            })
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .padding(padding)
+                                .weight(1f)
+                                .fillMaxHeight(),
+                            value = ingredientGrams,
+                            onValueChange = { newGrams ->
+                                ingredientGrams = newGrams
+                                ingredientField.value = ingredientName to ingredientGrams
+                            },
+                            label = {
+                                Text(
+                                    "Grammi", style =
+                                    MaterialTheme.typography.bodySmall
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
                 }
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(1f),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.width(310.dp),
                 ) {
                     Button(onClick = {
-                        val ingredients = ingredientName + " " + ingredientGrams + "g"
+                        ingredientsFields = ingredientsFields + mutableStateOf(ingredientName to ingredientGrams)
+                        ingredientName = ""
+                        ingredientGrams = ""
+                    }) {
+                        Text("+")
+                    }
+                    Button(onClick = {
+                        val ingredientsToGrams = ingredientsFields.map { it.value }
                         onFormResult(
                             Recipe(
                                 name,
                                 description,
-                                listOf(ingredients to ingredientGrams)
+                                ingredientsToGrams
                             )
                         )
                     }) {

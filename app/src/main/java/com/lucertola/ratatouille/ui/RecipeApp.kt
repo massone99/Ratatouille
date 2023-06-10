@@ -37,8 +37,6 @@ import com.lucertola.ratatouille.ui.ShoppingPage.ShoppingPage
 import com.lucertola.ratatouille.ui.pages.AddRecipePage.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage.EditRecipePage
 import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
-import com.lucertola.ratatouille.ui.theme.PastelYellowBackground
-import com.lucertola.ratatouille.ui.theme.PastelYellowOnSurface
 
 const val HOME = "RecipesListPage"
 const val VIEW_RECIPE = "ViewRecipePage"
@@ -86,53 +84,53 @@ object RecipeApp {
             navController.popBackStack()
         }
 
-
-        Scaffold(
-
-            topBar = {
-                TopAppBar(title = { Text("Ratatouille") }, actions = {
-                    val currentRoute = currentRoute(navController)
-                    IconButton(onClick = {
-                        if (currentRoute != ADD_RECIPE) {
-                            navController.navigate(ADD_RECIPE)
-                        }
-                    }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add")
+        Scaffold(topBar = {
+            TopAppBar(title = { Text("Ratatouille") }, actions = {
+                val currentRoute = currentRoute(navController)
+                IconButton(onClick = {
+                    if (currentRoute != ADD_RECIPE) {
+                        navController.navigate(ADD_RECIPE)
                     }
-                })
-            },
-            bottomBar = {
-                val backgroundColor = if (isSystemInDarkTheme()) {
-                    Color.Black // Set dark theme color
-                } else {
-                    Color.White // Set light theme color
+                }) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
-
-                val contentColor = if (isSystemInDarkTheme()) {
-                    Color.White // Set dark theme color
-                } else {
-                    Color.Black // Set light theme color
-                }
-
-                BottomNavigation(
-                    backgroundColor = backgroundColor,
-                    contentColor = contentColor
-                ) {
-                    // by default the current route is HOME
-                    val currentRoute = currentRoute(navController)
-                    BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-                        selected = currentRoute == HOME,
-                        onClick = { navController.navigate(HOME) }
-                    )
-                    BottomNavigationItem(
-                        icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Shopping") },
-                        selected = currentRoute == SHOPPING_PAGE,
-                        onClick = { navController.navigate(SHOPPING_PAGE) }
-                    )
-                }
+            })
+        }, bottomBar = {
+            val backgroundColor = if (isSystemInDarkTheme()) {
+                Color.Black // Set dark theme color
+            } else {
+                Color.White // Set light theme color
             }
-        ) {
+
+            val contentColor = if (isSystemInDarkTheme()) {
+                Color.White // Set dark theme color
+            } else {
+                Color.Black // Set light theme color
+            }
+
+            BottomNavigation(
+                backgroundColor = backgroundColor, contentColor = contentColor
+            ) {
+                // by default the current route is HOME
+                val currentRoute = currentRoute(navController)
+                BottomNavigationItem(icon = {
+                    Icon(
+                        Icons.Filled.Home,
+                        contentDescription = "Home"
+                    )
+                },
+                    selected = currentRoute == HOME,
+                    onClick = { navController.navigate(HOME) })
+                BottomNavigationItem(icon = {
+                    Icon(
+                        Icons.Filled.ShoppingCart,
+                        contentDescription = "Shopping"
+                    )
+                },
+                    selected = currentRoute == SHOPPING_PAGE,
+                    onClick = { navController.navigate(SHOPPING_PAGE) })
+            }
+        }) {
             Column(modifier = Modifier.padding(it)) {
                 NavHost(navController = navController, startDestination = HOME) {
                     composable(HOME) {

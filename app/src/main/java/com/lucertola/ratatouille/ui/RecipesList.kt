@@ -98,11 +98,12 @@ object RecipesList {
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(8.dp),
                 )
+
                 Text(
-                    text = recipe.ingredientsToGrams.map { it.first }.joinToString(", "),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(8.dp),
+                    recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                    style = MaterialTheme.typography.bodySmall
                 )
+
 
                 Button(onClick = { onViewRecipe(recipe) }, modifier = Modifier.padding(8.dp)) {
                     Text("View Recipe")
