@@ -19,70 +19,67 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 
-object ViewRecipePage {
-    /**
-     * Return a RecipeDialog ( a view on a recipe ).
-     * @param recipe The recipe to display.
-     * @param onDismissRequest The callback to invoke when the dialog is dismissed.
-     * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ViewRecipePage(
-        recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
-    ) {
-        Scaffold(content = {
-            Column(modifier = Modifier.padding(it).fillMaxWidth(1f)) {
-                Card(
+/**
+ * Return a RecipeDialog ( a view on a recipe ).
+ * @param recipe The recipe to display.
+ * @param onDismissRequest The callback to invoke when the dialog is dismissed.
+ * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ViewRecipePage(
+    recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
+) {
+    Scaffold(content = {
+        Column(modifier = Modifier.padding(it).fillMaxWidth(1f)) {
+            Card(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(1f)
+            ) {
+                Column(
                     modifier = Modifier
                         .padding(16.dp)
-                        .fillMaxWidth(1f)
+                        .fillMaxWidth(1f),
                 ) {
+                    // add a text with name and h1
                     Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(1f),
+                        modifier = Modifier.fillMaxWidth(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        // add a text with name and h1
-                        Column(
-                            modifier = Modifier.fillMaxWidth(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
+                        Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
+                    }
+                    Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
+                    Text(recipe.description)
+                    Text("\n")
+                    Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                        style = MaterialTheme.typography.bodySmall
+                    )
+
+
+                    // add some space between the text and the buttons
+                    Spacer(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .height(8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        Button(onClick = { onEditRecipe(recipe) }) {
+                            Text("Edit")
                         }
-                        Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
-                        Text(recipe.description)
-                        Text("\n")
-                        Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
-                        Text(
-                            recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
-                            style = MaterialTheme.typography.bodySmall
-                        )
-
-
-                        // add some space between the text and the buttons
-                        Spacer(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .height(8.dp)
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1f),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                        ) {
-                            Button(onClick = { onEditRecipe(recipe) }) {
-                                Text("Edit")
-                            }
-                            Button(onClick = { onDeleteRecipe(recipe) }) {
-                                Text("Delete")
-                            }
+                        Button(onClick = { onDeleteRecipe(recipe) }) {
+                            Text("Delete")
                         }
                     }
-
                 }
-            }
-        })
-    }
 
+            }
+        }
+    })
 }

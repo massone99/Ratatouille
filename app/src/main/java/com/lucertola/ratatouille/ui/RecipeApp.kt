@@ -35,9 +35,9 @@ import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.data.RecipesStore
 import com.lucertola.ratatouille.ui.RecipesList.RecipesList
 import com.lucertola.ratatouille.ui.ShoppingPage.ShoppingPage
-import com.lucertola.ratatouille.ui.pages.AddRecipePage.AddRecipePage
-import com.lucertola.ratatouille.ui.pages.EditRecipePage.EditRecipePage
-import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
+import com.lucertola.ratatouille.ui.pages.AddRecipePage
+import com.lucertola.ratatouille.ui.pages.EditRecipePage
+import com.lucertola.ratatouille.ui.pages.ViewRecipePage
 
 const val HOME = "RecipesListPage"
 const val VIEW_RECIPE = "ViewRecipePage"

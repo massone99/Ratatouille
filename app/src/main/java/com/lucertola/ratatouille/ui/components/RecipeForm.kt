@@ -1,13 +1,20 @@
-package com.lucertola.ratatouille.ui.pages
+package com.lucertola.ratatouille.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
@@ -130,98 +136,6 @@ fun RecipeForm(
                         Text("Cancel")
                     }
                 }
-            }
-        }
-    }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun IngredientRow(
-    ingredientName: String,
-    ingredientGrams: String,
-    onIngredientChange: (String, String) -> Unit,
-    onDeleteClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(modifier = Modifier.weight(1f),
-            value = ingredientName,
-            onValueChange = { newName -> onIngredientChange(newName, ingredientGrams) },
-            label = { Text("Ingrediente") })
-        Spacer(Modifier.width(8.dp))
-        OutlinedTextField(
-            modifier = Modifier.weight(1f),
-            value = ingredientGrams,
-            onValueChange = { newGrams -> onIngredientChange(ingredientName, newGrams) },
-            label = { Text("Grammi") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        IconButton(onClick = onDeleteClick) {
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete ingredient")
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun IngredientInputRow(
-    ingredientName: String,
-    ingredientGrams: String,
-    onIngredientChange: (String, String) -> Unit,
-    onAddClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(modifier = Modifier.weight(1f),
-            value = ingredientName,
-            onValueChange = { newName -> onIngredientChange(newName, ingredientGrams) },
-            label = { Text("Ingrediente") })
-        Spacer(Modifier.width(8.dp))
-        OutlinedTextField(
-            modifier = Modifier.weight(1f),
-            value = ingredientGrams,
-            onValueChange = { newGrams -> onIngredientChange(ingredientName, newGrams) },
-            label = { Text("Grammi") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        IconButton(onClick = onAddClick) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
-        }
-    }
-}
-
-object EditRecipePage {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun EditRecipePage(
-        recipe: Recipe, navController: NavController, onEditRecipe: (Recipe) -> Unit
-    ) {
-        Scaffold {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxWidth()
-            ) {
-                RecipeForm("Modifica la ricetta", recipe, onEditRecipe, navController)
-            }
-        }
-    }
-}
-
-object AddRecipePage {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun AddRecipePage(navController: NavController, onAddRecipe: (Recipe) -> Unit) {
-        val recipe = Recipe("", "", listOf())
-        Scaffold {
-            Column(modifier = Modifier.padding(it)) {
-                RecipeForm("Aggiungi una ricetta", recipe, onAddRecipe, navController)
             }
         }
     }
