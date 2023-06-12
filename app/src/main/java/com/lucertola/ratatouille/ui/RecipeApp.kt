@@ -6,18 +6,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -34,9 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.data.RecipesStore
 import com.lucertola.ratatouille.ui.ShoppingPage.ShoppingPage
+import com.lucertola.ratatouille.ui.home.HomeBottomAppBar
+import com.lucertola.ratatouille.ui.home.HomeTopAppBar
 import com.lucertola.ratatouille.ui.pages.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage
-import com.lucertola.ratatouille.ui.pages.RecipesList
 import com.lucertola.ratatouille.ui.pages.ViewRecipePage
 
 const val HOME = "RecipesListPage"
@@ -86,16 +77,7 @@ object RecipeApp {
         }
 
         Scaffold(topBar = {
-            TopAppBar(title = { Text("Ratatouille") }, actions = {
-                val currentRoute = currentRoute(navController)
-                IconButton(onClick = {
-                    if (currentRoute != ADD_RECIPE) {
-                        navController.navigate(ADD_RECIPE)
-                    }
-                }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add")
-                }
-            })
+            HomeTopAppBar(navController)
         }, bottomBar = {
             val backgroundColor = if (isSystemInDarkTheme()) {
                 Color.Black // Set dark theme color
@@ -109,24 +91,7 @@ object RecipeApp {
                 Color.Black // Set light theme color
             }
 
-            BottomNavigation(
-                backgroundColor = backgroundColor, contentColor = contentColor
-            ) {
-                // by default the current route is HOME
-                val currentRoute = currentRoute(navController)
-                BottomNavigationItem(icon = {
-                    Icon(
-                        Icons.Filled.Home, contentDescription = "Home"
-                    )
-                }, selected = currentRoute == HOME, onClick = { navController.navigate(HOME) })
-                BottomNavigationItem(icon = {
-                    Icon(
-                        Icons.Filled.ShoppingCart, contentDescription = "Shopping"
-                    )
-                },
-                    selected = currentRoute == SHOPPING_PAGE,
-                    onClick = { navController.navigate(SHOPPING_PAGE) })
-            }
+            HomeBottomAppBar(backgroundColor, contentColor, navController)
         }) {
             Column(
                 modifier = Modifier
