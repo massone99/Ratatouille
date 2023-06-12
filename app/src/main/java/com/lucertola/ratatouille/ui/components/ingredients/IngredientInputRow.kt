@@ -1,4 +1,4 @@
-package com.lucertola.ratatouille.ui.components
+package com.lucertola.ratatouille.ui.components.ingredients
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IngredientRow(
+fun IngredientInputRow(
     ingredientName: String,
     ingredientGrams: String,
     onIngredientChange: (String, String) -> Unit,
-    onDeleteClick: () -> Unit
+    onAddClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -44,8 +44,8 @@ fun IngredientRow(
             label = { Text("Grammi") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        IconButton(onClick = onDeleteClick) {
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete ingredient")
+        IconButton(onClick = onAddClick) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
         }
     }
 }

@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.components.ingredients.IngredientInputRow
+import com.lucertola.ratatouille.ui.components.ingredients.IngredientRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

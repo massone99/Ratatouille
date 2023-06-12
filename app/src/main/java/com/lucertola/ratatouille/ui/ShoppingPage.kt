@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 
 object ShoppingPage {
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ShoppingPage(recipes: List<Recipe>) {
