@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,8 +24,8 @@ import com.lucertola.ratatouille.data.Recipe
 /**
  * Return a RecipeDialog ( a view on a recipe ).
  * @param recipe The recipe to display.
- * @param onDismissRequest The callback to invoke when the dialog is dismissed.
  * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
+ * @param onEditRecipe The callback to invoke when the recipe is edited.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,54 +33,70 @@ fun ViewRecipePage(
     recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
 ) {
     Scaffold(content = {
-        Column(modifier = Modifier.padding(it).fillMaxWidth(1f)) {
-            Card(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(1f)
-            ) {
-                Column(
+        LazyColumn(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth(1f)
+        ) {
+            item {
+                Card(
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(1f),
+                    elevation = CardDefaults.elevatedCardElevation()
                 ) {
-                    // add a text with name and h1
                     Column(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
-                    }
-                    Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
-                    Text(recipe.description)
-                    Text("\n")
-                    Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
-                    Text(
-                        recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
-                        style = MaterialTheme.typography.bodySmall
-                    )
-
-
-                    // add some space between the text and the buttons
-                    Spacer(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .height(8.dp)
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                            .padding(16.dp)
+                            .fillMaxWidth(1f),
                     ) {
-                        Button(onClick = { onEditRecipe(recipe) }) {
-                            Text("Edit")
+                        // add a text with name and h1
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
                         }
-                        Button(onClick = { onDeleteRecipe(recipe) }) {
-                            Text("Delete")
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Descrizione:",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Text(recipe.description, style = MaterialTheme.typography.bodyLarge)
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Ingredienti:",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+
+                        // add some space between the text and the buttons
+                        Spacer(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .height(8.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
+                            Button(onClick = { onEditRecipe(recipe) }) {
+                                Text("Edit")
+                            }
+                            Button(onClick = { onDeleteRecipe(recipe) }) {
+                                Text("Delete")
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
     })
