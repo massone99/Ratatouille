@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui.pages
 
+import RecipeViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,6 +25,7 @@ import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 @Composable
 fun RecipeForm(
     title: String, // title to be shown on the form
+    viewModel: RecipeViewModel, // view model for the form
     recipe: Recipe, // the recipe data to prepopulate the form
     onFormResult: (Recipe) -> Unit, // callback when the form is submitted
     navController: NavController // navigation controller for screen transitions
@@ -86,15 +88,39 @@ fun RecipeForm(
                     label = { Text("Descrizione") }) // label for the text field
 
                 // Loop over the ingredients list and create a row for each ingredient
-                ingredientsFields = renderIngredients(ingredientsFields)
+                ingredientsFields.forEachIndexed { index, ingredientField ->
+                    val (innerIngredientName, innerIngredientGrams) = ingredientField.value
+                    IngredientRow(ingredientName = innerIngredientName,
+                        ingredientGrams = innerIngredientGrams,
+                        onIngredientChange = { newName, newGrams ->
+                            // update the ingredient when the user types into the field
+                            ingredientField.value = newName to newGrams
+                        },
+                        onDeleteClick = {
+                            // remove the ingredient from the list when the user clicks the delete button
+                            ingredientsFields =
+                                ingredientsFields.filterIndexed { i, _ -> i != index }
+                        })
+                }
+
 
                 // An input row for adding new ingredients
-                IngredientInputRow(ingredientName = ingredientName,
+                IngredientInputRow(
+                    ingredientName = ingredientName,
                     ingredientGrams = ingredientGrams,
                     onIngredientChange = { newName, newGrams ->
-                        // update the state variables when the user types into the field
+
+                        // added the new ingredient made of newName and newGrams to the current list of ingredients
                         ingredientName = newName
                         ingredientGrams = newGrams
+
+                        val editedRecipe =
+                            Recipe(
+                                name,
+                                description,
+                                recipe.ingredientsToGrams + (ingredientName to ingredientGrams)
+                            )
+                        viewModel.editRecipe(editedRecipe)
                     },
                     onAddClick = {
                         // add the new ingredient to the list when the user clicks the add button
@@ -154,21 +180,3 @@ private fun ButtonRow(
     }
 }
 
-@Composable
-private fun renderIngredients(ingredientsFields: List<MutableState<Pair<String, String>>>): List<MutableState<Pair<String, String>>> {
-    var ingredientsFields1 = ingredientsFields
-    ingredientsFields1.forEachIndexed { index, ingredientField ->
-        val (innerIngredientName, innerIngredientGrams) = ingredientField.value
-        IngredientRow(ingredientName = innerIngredientName,
-            ingredientGrams = innerIngredientGrams,
-            onIngredientChange = { newName, newGrams ->
-                // update the ingredient when the user types into the field
-                ingredientField.value = newName to newGrams
-            },
-            onDeleteClick = {
-                // remove the ingredient from the list when the user clicks the delete button
-                ingredientsFields1 = ingredientsFields1.filterIndexed { i, _ -> i != index }
-            })
-    }
-    return ingredientsFields1
-}

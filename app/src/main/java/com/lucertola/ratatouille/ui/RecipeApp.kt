@@ -1,7 +1,3 @@
-package com.lucertola.ratatouille.ui
-
-import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,10 +6,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -21,13 +13,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.data.RecipesStore
 import com.lucertola.ratatouille.ui.ShoppingPage.ShoppingPage
 import com.lucertola.ratatouille.ui.home.HomeBottomAppBar
 import com.lucertola.ratatouille.ui.home.HomeTopAppBar
 import com.lucertola.ratatouille.ui.pages.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage
+import com.lucertola.ratatouille.ui.pages.RecipesList
 import com.lucertola.ratatouille.ui.pages.ViewRecipePage
 
 const val HOME = "RecipesListPage"
@@ -37,44 +28,10 @@ const val EDIT_RECIPE = "EditRecipePage"
 const val SHOPPING_PAGE = "ShoppingPage"
 
 object RecipeApp {
-    @SuppressLint("MutableCollectionMutableState")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun RecipeApp(context: Context) {
+    fun RecipeApp(recipeViewModel: RecipeViewModel) {
         val navController = rememberNavController()
-        val recipesStore = RecipesStore(context)
-        val initialRecipes = recipesStore.getRecipes()
-        val recipes = remember { mutableStateOf(initialRecipes) }
-        var selectedRecipe by remember { mutableStateOf<Recipe?>(null) }
-        val shoppingRecipes by remember { mutableStateOf(mutableStateListOf<Recipe>()) }
-
-
-        val onAddRecipe: (Recipe) -> Unit = { recipe ->
-            recipes.value = recipes.value + recipe
-            recipesStore.saveRecipes(recipes.value)
-            navController.navigate(HOME)
-        }
-
-        val onDeleteRecipe: (Recipe) -> Unit = { recipeToDelete ->
-            recipes.value = recipes.value.filter { it != recipeToDelete }
-            recipesStore.saveRecipes(recipes.value)
-            selectedRecipe = null
-            navController.navigate(HOME)
-        }
-        val onEditRecipe: (Recipe) -> Unit = { editedRecipe ->
-            selectedRecipe?.let { originalRecipe ->
-                val index = recipes.value.indexOf(originalRecipe)
-                if (index != -1) {
-                    val updatedRecipes = recipes.value.toMutableList()
-                    updatedRecipes[index] = editedRecipe
-                    recipes.value = updatedRecipes
-                    recipesStore.saveRecipes(recipes.value)
-                    selectedRecipe = null
-                }
-            }
-            selectedRecipe = editedRecipe
-            navController.popBackStack()
-        }
 
         Scaffold(topBar = {
             HomeTopAppBar(navController)
@@ -100,28 +57,36 @@ object RecipeApp {
             ) {
                 NavHost(navController = navController, startDestination = HOME) {
                     composable(HOME) {
-                        RecipesList(recipes.value) { recipe ->
-                            selectedRecipe = recipe
+                        RecipesList(recipeViewModel.recipes) { recipe ->
+                            recipeViewModel.selectedRecipe.value = recipe
                             navController.navigate(VIEW_RECIPE)
                         }
                     }
                     composable(VIEW_RECIPE) {
-                        selectedRecipe?.let { recipe ->
-                            ViewRecipePage(recipe, onDeleteRecipe) {
+                        recipeViewModel.selectedRecipe.value?.let { recipe ->
+                            ViewRecipePage(recipe, {
+                                recipeViewModel.removeRecipe(recipe)
+                                navController.navigate(HOME)
+                            }) {
                                 navController.navigate(EDIT_RECIPE)
                             }
                         }
                     }
                     composable(ADD_RECIPE) {
-                        AddRecipePage(navController, onAddRecipe)
+                        AddRecipePage(
+                            recipeViewModel, navController, recipeViewModel::addRecipe
+                        )
                     }
                     composable(EDIT_RECIPE) {
-                        selectedRecipe?.let { recipe ->
-                            EditRecipePage(recipe, navController, onEditRecipe)
+                        recipeViewModel.selectedRecipe.value?.let { recipe ->
+                            EditRecipePage(recipe, recipeViewModel, navController) {
+                                recipeViewModel.addRecipe(it)
+                                navController.navigate(VIEW_RECIPE)
+                            }
                         }
                     }
                     composable(SHOPPING_PAGE) {
-                        ShoppingPage(recipes = shoppingRecipes)
+                        ShoppingPage(recipes = recipeViewModel.shoppingRecipes)
                     }
                 }
             }

@@ -1,5 +1,8 @@
 package com.lucertola.ratatouille.ui.home
 
+import HOME
+import RecipeApp
+import SHOPPING_PAGE
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
@@ -9,9 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import com.lucertola.ratatouille.ui.HOME
-import com.lucertola.ratatouille.ui.RecipeApp
-import com.lucertola.ratatouille.ui.SHOPPING_PAGE
 
 @Composable
 fun HomeBottomAppBar(

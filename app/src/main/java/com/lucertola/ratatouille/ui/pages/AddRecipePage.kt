@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui.pages
 
+import RecipeViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,11 +12,15 @@ import com.lucertola.ratatouille.data.Recipe
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddRecipePage(navController: NavController, onAddRecipe: (Recipe) -> Unit) {
+fun AddRecipePage(
+    recipeViewModel: RecipeViewModel, navController: NavController, onAddRecipe: (Recipe) -> Unit
+) {
     val recipe = Recipe("", "", listOf())
     Scaffold {
         Column(modifier = Modifier.padding(it)) {
-            RecipeForm("Aggiungi una ricetta", recipe, onAddRecipe, navController)
+            RecipeForm(
+                "Aggiungi una ricetta", recipeViewModel, recipe, onAddRecipe, navController
+            )
         }
     }
 }

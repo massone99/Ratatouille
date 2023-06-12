@@ -25,8 +25,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 import com.lucertola.ratatouille.ui.theme.PastelYellowDark
-import com.lucertola.ratatouille.ui.theme.PastelYellowLight
 
 
 /**
@@ -42,7 +42,7 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
     val color = if (isSelected.value) {
         PastelYellowDark
     } else {
-        PastelYellowLight
+        CardBackgroundLight
     }
     val shape = RoundedCornerShape(13.dp)
     Card(

@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui.pages
 
+import RecipeViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,10 @@ import com.lucertola.ratatouille.data.Recipe
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRecipePage(
-    recipe: Recipe, navController: NavController, onEditRecipe: (Recipe) -> Unit
+    recipe: Recipe,
+    viewModel: RecipeViewModel,
+    navController: NavController,
+    onEditRecipe: (Recipe) -> Unit
 ) {
     Scaffold {
         Column(
@@ -21,7 +25,7 @@ fun EditRecipePage(
                 .padding(it)
                 .fillMaxWidth()
         ) {
-            RecipeForm("Modifica la ricetta", recipe, onEditRecipe, navController)
+            RecipeForm("Modifica la ricetta", viewModel, recipe, onEditRecipe, navController)
         }
     }
 }
