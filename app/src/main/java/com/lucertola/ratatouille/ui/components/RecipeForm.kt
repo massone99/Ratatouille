@@ -1,51 +1,45 @@
-package com.lucertola.ratatouille.ui.pages
+package com.lucertola.ratatouille.ui.components
 
-import RecipeViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.ui.ingredients.IngredientInputRow
-import com.lucertola.ratatouille.ui.ingredients.IngredientRow
+import com.lucertola.ratatouille.ui.ingredients.PendingIngredientRow
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeForm(
     title: String, // title to be shown on the form
-    viewModel: RecipeViewModel, // view model for the form
     recipe: Recipe, // the recipe data to prepopulate the form
     onFormResult: (Recipe) -> Unit, // callback when the form is submitted
-    navController: NavController // navigation controller for screen transitions
+    navController: NavController
 ) {
-    // State variables for the recipe name and description
-    var name by remember { mutableStateOf(recipe.name) }
-    var description by remember { mutableStateOf(recipe.description) }
 
-    // State variable for the list of ingredients.
-    // Each ingredient is itself a mutable state to allow for independent updates.
-    var ingredientsFields by remember {
-        mutableStateOf(recipe.ingredientsToGrams.map {
-            mutableStateOf(
-                it
-            )
-        })
+    var name by remember {
+        mutableStateOf(recipe.name)
     }
-    // State variables for the input fields for a new ingredient
-    var ingredientName by remember { mutableStateOf("") }
-    var ingredientGrams by remember { mutableStateOf("") }
+    var description by remember {
+        mutableStateOf(recipe.description)
+    }
+    var ingredients by remember {
+        mutableStateOf(recipe.ingredients)
+    }
+
+    if (ingredients.isEmpty()) {
+        ingredients = ingredients + Ingredient("", "")
+    }
 
     // The layout structure of the form
     Column(
@@ -71,112 +65,71 @@ fun RecipeForm(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp) // adds vertical spacing between the children of this column
             ) {
-                // Various UI elements of the form
+                // Title
                 Text(
                     title, style = MaterialTheme.typography.headlineMedium
                 )
-                OutlinedTextField(modifier = Modifier.fillMaxWidth(), // a text field that fills the entire width of the parent
-                    value = name, onValueChange = {
-                        name = it
-                    }, // updates the state variable when the user types into the field
-                    label = { Text("Nome") }) // label for the text field
+                // OutlineTextField for the recipe name
+                OutlinedTextField(value = name, onValueChange = {
+                    name = it
+                }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth()
+                )
+                // OutlineTextField for the recipe description
+                OutlinedTextField(value = description, onValueChange = {
+                    description = it
+                }, label = { Text("Descrizione") }, modifier = Modifier.fillMaxWidth()
+                )
+                // The list of ingredients
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // for each of the ingredients in the recipe create a PendingIngredientRow
+                    ingredients.forEachIndexed { idxUpdatedIngredient, ingredient ->
+                        var ingrName by remember { mutableStateOf(ingredient.name) }
+                        var ingrGrams by remember { mutableStateOf(ingredient.grams) }
 
-                OutlinedTextField(modifier = Modifier.fillMaxWidth(), // a text field that fills the entire width of the parent
-                    value = description, onValueChange = {
-                        description = it
-                    }, // updates the state variable when the user types into the field
-                    label = { Text("Descrizione") }) // label for the text field
-
-                // Loop over the ingredients list and create a row for each ingredient
-                ingredientsFields.forEachIndexed { index, ingredientField ->
-                    val (innerIngredientName, innerIngredientGrams) = ingredientField.value
-                    IngredientRow(ingredientName = innerIngredientName,
-                        ingredientGrams = innerIngredientGrams,
-                        onIngredientChange = { newName, newGrams ->
-                            // update the ingredient when the user types into the field
-                            ingredientField.value = newName to newGrams
-                        },
-                        onDeleteClick = {
-                            // remove the ingredient from the list when the user clicks the delete button
-                            ingredientsFields =
-                                ingredientsFields.filterIndexed { i, _ -> i != index }
+                        PendingIngredientRow(ingredientToRender = ingredient,
+                            onNameChange = { newIngrName ->
+                                ingrName = newIngrName
+                                ingredients = ingredients.mapIndexed { idx, ingr ->
+                                    // we propagate the change to the list of ingredients
+                                    if (idx == idxUpdatedIngredient) ingr.copy(name = newIngrName) else ingr
+                                }
+                            },
+                            onGramsChange = { newIngrGrams ->
+                                ingrGrams = newIngrGrams
+                                ingredients = ingredients.mapIndexed { idx, ingr ->
+                                    // we propagate the change to the list of ingredients
+                                    if (idx == idxUpdatedIngredient) ingr.copy(grams = newIngrGrams) else ingr
+                                }
+                            },
+                            onAddClick = {
+                                ingredients = ingredients + Ingredient("", "")
+                            })
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(onClick = {
+                            val editedRecipe = Recipe(name, description, ingredients)
+                            editedRecipe.id = recipe.id
+                            onFormResult(editedRecipe)
+                        }, content = {
+                            Text(text = "Conferma")
                         })
+                        Button(onClick = {
+                            navController.popBackStack()
+                        }, content = {
+                            Text(text = "Annulla")
+                        })
+                    }
                 }
-
-
-                // An input row for adding new ingredients
-                IngredientInputRow(
-                    ingredientName = ingredientName,
-                    ingredientGrams = ingredientGrams,
-                    onIngredientChange = { newName, newGrams ->
-
-                        // added the new ingredient made of newName and newGrams to the current list of ingredients
-                        ingredientName = newName
-                        ingredientGrams = newGrams
-
-                        val editedRecipe =
-                            Recipe(
-                                name,
-                                description,
-                                recipe.ingredientsToGrams + (ingredientName to ingredientGrams)
-                            )
-                        viewModel.editRecipe(editedRecipe)
-                    },
-                    onAddClick = {
-                        // add the new ingredient to the list when the user clicks the add button
-                        ingredientsFields =
-                            ingredientsFields + mutableStateOf(ingredientName to ingredientGrams)
-                        ingredientName = ""
-                        ingredientGrams = ""
-                    })
-
-                // A row of buttons at the bottom of the form
-                ButtonRow(ingredientsFields, onFormResult, name, description, navController)
             }
         }
     }
 }
-
-@Composable
-private fun ButtonRow(
-    ingredientsFields: List<MutableState<Pair<String, String>>>,
-    onFormResult: (Recipe) -> Unit,
-    name: String,
-    description: String,
-    navController: NavController
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(), // fills the entire width of the parent
-        horizontalArrangement = Arrangement.End, // aligns the buttons to the end of the row
-        verticalAlignment = Alignment.CenterVertically // centers the buttons vertically in the row
-    ) {
-        // The confirm button
-        Button(
-            onClick = {
-                // create a new recipe object from the state variables and call the onFormResult callback when the button is clicked
-                val ingredientsToGrams = ingredientsFields.map { it.value }
-                onFormResult(
-                    Recipe(
-                        name, description, ingredientsToGrams
-                    )
-                )
-            }, colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = Color.Black,
-            )
-        ) {
-            Text("Conferma")
-        }
-        Spacer(Modifier.width(16.dp)) // adds horizontal space between the buttons
-        // The cancel button
-        Button(
-            onClick = { navController.navigateUp() }, colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = Color.Black,
-            )
-        ) { // navigates to the previous screen when the button is clicked
-            Text("Cancella")
-        }
-    }
-}
-

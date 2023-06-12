@@ -18,20 +18,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.lucertola.ratatouille.data.Ingredient
 
 /**
- * A Composable that represents a row of a form where the user can insert an ingredient.
- * @param ingredientName the name of the ingredient
- * @param ingredientGrams the grams of the ingredient
- * @param onIngredientChange the callback to be called when the ingredient name or grams change
+ * A Composable that represents a row of a form where the user can add a new ingredient.
+ * @param ingredientToRender the ingredient to be added
+ * @param onNameChange the callback to be called when the ingredient name changes
+ * @param onGramsChange the callback to be called when the ingredient grams change
  * @param onAddClick the callback to be called when the user clicks on the add button
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IngredientInputRow(
-    ingredientName: String,
-    ingredientGrams: String,
-    onIngredientChange: (String, String) -> Unit,
+fun PendingIngredientRow(
+    ingredientToRender: Ingredient,
+    onNameChange: (String) -> Unit,
+    onGramsChange: (String) -> Unit,
     onAddClick: () -> Unit
 ) {
     Row(
@@ -40,14 +41,14 @@ fun IngredientInputRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(modifier = Modifier.weight(1f),
-            value = ingredientName,
-            onValueChange = { newName -> onIngredientChange(newName, ingredientGrams) },
+            value = ingredientToRender.name,
+            onValueChange = { newName -> onNameChange(newName) },
             label = { Text("Ingrediente") })
         Spacer(Modifier.width(8.dp))
         OutlinedTextField(
             modifier = Modifier.weight(1f),
-            value = ingredientGrams,
-            onValueChange = { newGrams -> onIngredientChange(ingredientName, newGrams) },
+            value = ingredientToRender.grams,
+            onValueChange = { newGrams -> onGramsChange(newGrams) },
             label = { Text("Grammi") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )

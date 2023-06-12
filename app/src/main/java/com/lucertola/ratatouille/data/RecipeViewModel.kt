@@ -1,4 +1,5 @@
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -33,10 +34,13 @@ class RecipeViewModel(
         }
     }
 
-    fun editRecipe(recipe: Recipe) {
-        val index = recipes.indexOfFirst { it.name == recipe.name }
-        if (index != -1) {
-            recipes[index] = recipe
+    fun editRecipe(recipeId: String, editedRecipe: Recipe) {
+        // retrieve the recipe with the given id
+        recipes.find { it.id == editedRecipe.id }?.let { recipe ->
+            recipe.name = editedRecipe.name
+            recipe.description = editedRecipe.description
+            Log.d("RecipeViewModel", "EditRecipeIngredient: ${editedRecipe.ingredients}")
+            recipe.ingredients = editedRecipe.ingredients
             recipesStore.saveRecipes(recipes)
         }
     }

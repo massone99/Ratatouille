@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
@@ -70,7 +71,7 @@ fun ViewRecipePage(
                     Text("\n")
                     Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
                     Text(
-                        recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                        recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
                         style = MaterialTheme.typography.bodySmall
                     )
 
@@ -118,10 +119,8 @@ fun ViewRecipePagePreview() {
     ViewRecipePage(recipe = Recipe(
         name = "Pasta al pomodoro",
         description = "Pasta al pomodoro",
-        ingredientsToGrams = listOf(
-            "Pasta" to "100",
-            "Pomodoro" to "100",
-            "Olio" to "10",
+        ingredients = listOf(
+            Ingredient(name = "Pasta", grams = "100"),
         ),
     ), onDeleteRecipe = {}, onEditRecipe = {})
 }

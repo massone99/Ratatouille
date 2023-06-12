@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -74,15 +75,17 @@ object RecipeApp {
                     }
                     composable(ADD_RECIPE) {
                         AddRecipePage(
-                            recipeViewModel, navController, recipeViewModel::addRecipe
+                            recipeViewModel::addRecipe,
+                            navController
                         )
                     }
                     composable(EDIT_RECIPE) {
                         recipeViewModel.selectedRecipe.value?.let { recipe ->
-                            EditRecipePage(recipe, recipeViewModel, navController) {
-                                recipeViewModel.addRecipe(it)
-                                navController.navigate(VIEW_RECIPE)
-                            }
+                            EditRecipePage(recipe, {
+                                Log.d("RecipeApp", "EditRecipeIngredient: ${it.ingredients}")
+                                recipeViewModel.editRecipe(it.id, it)
+                                navController.popBackStack()
+                            }, navController)
                         }
                     }
                     composable(SHOPPING_PAGE) {

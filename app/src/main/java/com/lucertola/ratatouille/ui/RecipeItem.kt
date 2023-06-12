@@ -73,7 +73,7 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                 modifier = Modifier.padding(bottom = 8.dp),
             )
             Text(
-                recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 8.dp),
             )

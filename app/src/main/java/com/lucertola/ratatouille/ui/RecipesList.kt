@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 
 
@@ -35,11 +36,9 @@ fun PreviewRecipeItem() {
         recipe = Recipe(
             name = "Pasta al pomodoro",
             description = "Pasta al pomodoro",
-            ingredientsToGrams = listOf(
-                Pair("Pasta", "100g"),
-                Pair("Pomodoro", "100g"),
-                Pair("Olio", "10g"),
-                Pair("Sale", "1g"),
+            ingredients = listOf(
+                Ingredient(name = "Pasta", grams = "100"),
+                Ingredient(name = "Pomodoro", grams = "100")
             )
         ),
         onViewRecipe = {}

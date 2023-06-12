@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 import com.lucertola.ratatouille.ui.theme.PastelYellowDark
@@ -72,10 +73,10 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(8.dp),
             )
-            val emptyIngredients = recipe.ingredientsToGrams.isEmpty()
+            val emptyIngredients = recipe.ingredients.isEmpty()
             Text(
                 if (emptyIngredients) "Nessun ingrediente specificato"
-                else recipe.ingredientsToGrams.joinToString(separator = "\n") { "${it.first} - ${it.second}gr" },
+                else recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
                 style = MaterialTheme.typography.bodySmall,
                 fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
             )
@@ -90,13 +91,8 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
 @Preview
 fun PreviewRecipeItem() {
     RecipeItem(recipe = Recipe(
-        name = "Pasta al pomodoro",
-        description = "Pasta al pomodoro",
-        ingredientsToGrams = listOf(
-            Pair("Pasta", "100g"),
-            Pair("Pomodoro", "100g"),
-            Pair("Olio", "10g"),
-            Pair("Sale", "1g"),
+        name = "Pasta al pomodoro", description = "Pasta al pomodoro", ingredients = listOf(
+            Ingredient(name = "Pasta", grams = "100"),
         )
     ), onViewRecipe = {})
 }

@@ -1,3 +1,11 @@
 package com.lucertola.ratatouille.data
 
-data class Recipe(var name: String, val description: String, val ingredientsToGrams: List<Pair<String, String>>)
+import java.util.UUID
+
+class Recipe(
+    var name: String,
+    var description: String,
+    var ingredients: List<Ingredient>
+) {
+    var id: String = UUID.randomUUID().toString()
+}
