@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.components.RecipeItem
 
 
 /**

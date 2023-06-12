@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +35,8 @@ fun PendingIngredientRow(
     ingredientToRender: Ingredient,
     onNameChange: (String) -> Unit,
     onGramsChange: (String) -> Unit,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -43,18 +46,29 @@ fun PendingIngredientRow(
         OutlinedTextField(modifier = Modifier.weight(1f),
             value = ingredientToRender.name,
             onValueChange = { newName -> onNameChange(newName) },
-            label = { Text("Ingrediente") })
+            label = {
+                Text(
+                    "Ingrediente", style = MaterialTheme.typography.bodySmall
+                )
+            })
         Spacer(Modifier.width(8.dp))
         OutlinedTextField(
             modifier = Modifier.weight(1f),
             value = ingredientToRender.grams,
             onValueChange = { newGrams -> onGramsChange(newGrams) },
-            label = { Text("Grammi") },
+            label = {
+                Text(
+                    "Grammi", style = MaterialTheme.typography.bodySmall
+                )
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         // we add another IngredientInputRow when the user clicks on the add button
         IconButton(onClick = onAddClick) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Aggiungi ingrediente")
+        }
+        IconButton(onClick = onDeleteClick) {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "Cancella ingrediente")
         }
     }
 }

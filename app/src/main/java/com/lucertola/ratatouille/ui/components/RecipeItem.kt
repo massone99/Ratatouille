@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
@@ -27,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
-import com.lucertola.ratatouille.ui.theme.PastelYellowDark
 
 
 /**
@@ -41,7 +42,7 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
     val haptic = LocalHapticFeedback.current
     val isSelected = remember { mutableStateOf(false) }
     val color = if (isSelected.value) {
-        PastelYellowDark
+        CardBackgroundLight
     } else {
         CardBackgroundLight
     }
@@ -56,8 +57,11 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                     isSelected.value = !isSelected.value
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
-            )
-            .background(color, shape = shape),
+            ),
+        colors = CardDefaults.cardColors(
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            containerColor = CardBackgroundLight,
+        ),
         elevation = CardDefaults.elevatedCardElevation(),
         shape = shape,
     ) {
@@ -80,7 +84,14 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                 style = MaterialTheme.typography.bodySmall,
                 fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
             )
-            Button(onClick = { onViewRecipe(recipe) }, modifier = Modifier.padding(8.dp)) {
+            Button(
+                onClick = { onViewRecipe(recipe) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = Color.Black,
+                ),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 Text("View Recipe")
             }
         }

@@ -109,6 +109,10 @@ fun RecipeForm(
                             },
                             onAddClick = {
                                 ingredients = ingredients + Ingredient("", "")
+                            },
+                            onDeleteClick = {
+                                ingredients =
+                                    ingredients.filterIndexed { idx, _ -> idx != idxUpdatedIngredient }
                             })
                     }
                     Row(
