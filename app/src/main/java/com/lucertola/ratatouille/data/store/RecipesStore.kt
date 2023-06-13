@@ -1,8 +1,9 @@
-package com.lucertola.ratatouille.data
+package com.lucertola.ratatouille.data.store
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.lucertola.ratatouille.data.Recipe
 
 class RecipesStore(context: Context) {
     private val sharedPreferences =

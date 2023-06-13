@@ -18,4 +18,3 @@ val PastelYellowSurface = Color(0xFFFFF9D6) // Pastel Yellow for Surface
 val PastelYellowOnPrimary = Color(0xFF4B3E2A) // Text color on Primary Pastel Yellow
 val PastelYellowOnBackground = Color(0xFF4B3E2A) // Text color on Background Pastel Yellow
 val PastelYellowOnSurface = Color(0xFF4B3E2A) // Text color on Surface Pastel Yellow
-

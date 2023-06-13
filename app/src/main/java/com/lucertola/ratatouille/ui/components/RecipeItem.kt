@@ -1,7 +1,7 @@
 package com.lucertola.ratatouille.ui.components
 
+import RatatouilleViewModel
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,11 +26,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.components.ShoppingDialog.ShoppingDialog
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 
@@ -41,15 +40,23 @@ import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
+fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (Recipe) -> Unit) {
     val haptic = LocalHapticFeedback.current
-    val isSelected = remember { mutableStateOf(false) }
-    val color = if (isSelected.value) {
-        CardBackgroundLight
-    } else {
-        CardBackgroundLight
-    }
+    val cardBackgroundColor = CardBackgroundLight
     val shape = RoundedCornerShape(13.dp)
+
+    // Add this line to manage the dialog state
+    val showDialog = remember { mutableStateOf(false) }
+
+    if (showDialog.value) {
+        ShoppingDialog(
+            showDialog,
+            cardBackgroundColor,
+            recipe,
+            viewModel
+        )
+    }
+
     Card(
         modifier = Modifier
             .clip(shape)
@@ -57,21 +64,19 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
             .combinedClickable(
                 onClick = {},
                 onLongClick = {
-                    isSelected.value = !isSelected.value
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    showDialog.value = true
                 },
             ),
         colors = CardDefaults.cardColors(
             contentColor = MaterialTheme.colorScheme.onSurface,
-            containerColor = CardBackgroundLight,
+            containerColor = cardBackgroundColor,
         ),
         elevation = CardDefaults.elevatedCardElevation(),
         shape = shape,
     ) {
         Column(
-            modifier = if (isSelected.value) Modifier
-                .background(color)
-                .fillMaxWidth() else Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -91,26 +96,13 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
                 fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
             )
             Button(
-                onClick = { onViewRecipe(recipe) },
-                colors = ButtonDefaults.buttonColors(
+                onClick = { onViewRecipe(recipe) }, colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = Color.Black,
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
+                ), modifier = Modifier.padding(8.dp)
             ) {
-                Text("View Recipe")
+                Text("Apri")
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun PreviewRecipeItem() {
-    RecipeItem(recipe = Recipe(
-        name = "Pasta al pomodoro", description = "Pasta al pomodoro", ingredients = listOf(
-            Ingredient(name = "Pasta", grams = "100"),
-        )
-    ), onViewRecipe = {})
 }

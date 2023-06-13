@@ -1,6 +1,6 @@
 package com.lucertola.ratatouille.ui.pages
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import RatatouilleViewModel
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,9 +11,12 @@ import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.components.RecipeItem
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
+fun RecipesList(
+    recipes: List<Recipe>,
+    viewModel: RatatouilleViewModel,
+    onViewRecipe: (Recipe) -> Unit
+) {
     val gridCells = GridCells.Fixed(2)
     LazyVerticalGrid(
         columns = gridCells,
@@ -22,7 +25,7 @@ fun RecipesList(recipes: List<Recipe>, onViewRecipe: (Recipe) -> Unit) {
             .padding(8.dp)
     ) {
         items(recipes.size) { index ->
-            RecipeItem(recipes[index], onViewRecipe)
+            RecipeItem(recipes[index], viewModel, onViewRecipe)
         }
     }
 }
