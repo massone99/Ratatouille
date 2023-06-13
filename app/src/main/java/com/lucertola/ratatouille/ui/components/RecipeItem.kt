@@ -24,8 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
@@ -75,6 +78,9 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
             Text(
                 text = recipe.name,
                 style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                fontSize = 17.sp,
                 modifier = Modifier.padding(8.dp),
             )
             val emptyIngredients = recipe.ingredients.isEmpty()
@@ -87,10 +93,11 @@ fun RecipeItem(recipe: Recipe, onViewRecipe: (Recipe) -> Unit) {
             Button(
                 onClick = { onViewRecipe(recipe) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = Color.Black,
                 ),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
             ) {
                 Text("View Recipe")
             }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Ingredient
@@ -123,12 +124,18 @@ fun RecipeForm(
                             val editedRecipe = Recipe(name, description, ingredients)
                             editedRecipe.id = recipe.id
                             onFormResult(editedRecipe)
-                        }, content = {
+                        }, colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = Color.Black,
+                        ), content = {
                             Text(text = "Conferma")
                         })
                         Button(onClick = {
                             navController.popBackStack()
-                        }, content = {
+                        }, colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = Color.Black,
+                        ), content = {
                             Text(text = "Annulla")
                         })
                     }

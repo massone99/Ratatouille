@@ -77,7 +77,7 @@ object RecipeApp {
                         AddRecipePage(
                             {
                                 recipeViewModel.addRecipe(it)
-                                navController.popBackStack()
+                                navController.navigate(HOME)
                             },
                             navController
                         )

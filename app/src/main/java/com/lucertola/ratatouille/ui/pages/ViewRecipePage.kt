@@ -66,8 +66,10 @@ fun ViewRecipePage(
                     ) {
                         Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
-                    Text(recipe.description)
+                    Text(recipe.description, style = MaterialTheme.typography.bodySmall)
                     Text("\n")
                     Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
                     Text(
@@ -90,7 +92,7 @@ fun ViewRecipePage(
                         Button(
                             onClick = { onEditRecipe(recipe) },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = Color.Black,
                             )
                         ) {
@@ -99,7 +101,7 @@ fun ViewRecipePage(
                         Button(
                             onClick = { onDeleteRecipe(recipe) },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = Color.Black,
                             )
                         ) {
@@ -107,7 +109,6 @@ fun ViewRecipePage(
                         }
                     }
                 }
-
             }
         }
     })
