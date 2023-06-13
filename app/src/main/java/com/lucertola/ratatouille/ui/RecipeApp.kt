@@ -75,7 +75,10 @@ object RecipeApp {
                     }
                     composable(ADD_RECIPE) {
                         AddRecipePage(
-                            recipeViewModel::addRecipe,
+                            {
+                                recipeViewModel.addRecipe(it)
+                                navController.popBackStack()
+                            },
                             navController
                         )
                     }
