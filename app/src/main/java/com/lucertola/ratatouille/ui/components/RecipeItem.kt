@@ -3,6 +3,7 @@ package com.lucertola.ratatouille.ui.components
 import RatatouilleViewModel
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.components.ShoppingDialog.ShoppingDialog
+import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 
@@ -42,7 +44,18 @@ import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 @Composable
 fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (Recipe) -> Unit) {
     val haptic = LocalHapticFeedback.current
-    val cardBackgroundColor = CardBackgroundLight
+    val cardBackgroundColor = if (isSystemInDarkTheme()) {
+        CardBackgroundDark
+    } else {
+        CardBackgroundLight
+    }
+
+    val textColor = if (isSystemInDarkTheme()) {
+        Color.White
+    } else {
+        Color.Black
+    }
+
     val shape = RoundedCornerShape(13.dp)
 
     // Add this line to manage the dialog state
@@ -50,10 +63,7 @@ fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (R
 
     if (showDialog.value) {
         ShoppingDialog(
-            showDialog,
-            cardBackgroundColor,
-            recipe,
-            viewModel
+            showDialog, cardBackgroundColor, recipe, viewModel
         )
     }
 
@@ -91,7 +101,7 @@ fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (R
             val emptyIngredients = recipe.ingredients.isEmpty()
             Text(
                 if (emptyIngredients) "Nessun ingrediente specificato"
-                else recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
+                else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
                 style = MaterialTheme.typography.bodySmall,
                 fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
             )
@@ -101,7 +111,7 @@ fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (R
                     contentColor = Color.Black,
                 ), modifier = Modifier.padding(8.dp)
             ) {
-                Text("Apri")
+                Text("Apri", color = textColor)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,6 +18,7 @@ import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.ingredients.PendingIngredientRow
+import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +45,11 @@ fun RecipeForm(
     }
 
     // The layout structure of the form
+    val textColor = if (isSystemInDarkTheme()) {
+        Color.White
+    } else {
+        Color.Black
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +64,11 @@ fun RecipeForm(
                 .padding(8.dp), // adds padding around the card
             colors = CardDefaults.cardColors(
                 contentColor = MaterialTheme.colorScheme.onSurface,
-                containerColor = CardBackgroundLight,
+                containerColor = if (isSystemInDarkTheme()) {
+                    CardBackgroundDark
+                } else {
+                    CardBackgroundLight
+                }
             ),
             elevation = CardDefaults.elevatedCardElevation(4.dp),
         ) {
@@ -68,12 +79,19 @@ fun RecipeForm(
             ) {
                 // Title
                 Text(
-                    title, style = MaterialTheme.typography.headlineMedium
+                    title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = textColor
                 )
                 // OutlineTextField for the recipe name
                 OutlinedTextField(value = name, onValueChange = {
                     name = it
-                }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth()
+                }, label = {
+                    Text(
+                        "Nome",
+                        color = textColor
+                    )
+                }, modifier = Modifier.fillMaxWidth()
                 )
                 // OutlineTextField for the recipe description
                 OutlinedTextField(value = description, onValueChange = {
@@ -128,7 +146,7 @@ fun RecipeForm(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = Color.Black,
                         ), content = {
-                            Text(text = "Conferma")
+                            Text(text = "Conferma", color = textColor)
                         })
                         Button(onClick = {
                             navController.popBackStack()
@@ -136,7 +154,7 @@ fun RecipeForm(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = Color.Black,
                         ), content = {
-                            Text(text = "Annulla")
+                            Text(text = "Annulla", color = textColor)
                         })
                     }
                 }

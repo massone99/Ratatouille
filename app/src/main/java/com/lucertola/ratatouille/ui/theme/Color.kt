@@ -12,6 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val PastelYellowPrimary = Color(0xFFFFF1B5) // Pastel Yellow
 val CardBackgroundLight = Color(0xFFFFF6E3) // Light Pastel Yellow
+val CardBackgroundDark = Color(0xFF424242) // Dark Pastel Yellow
 val PastelYellowDark = Color(0xFFEAD981) // Dark Pastel Yellow
 val PastelYellowBackground = Color(0xFFFFFAF0) // Pastel Yellow for Background
 val PastelYellowSurface = Color(0xFFFFF9D6) // Pastel Yellow for Surface

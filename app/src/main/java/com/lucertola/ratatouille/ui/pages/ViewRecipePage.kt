@@ -1,6 +1,6 @@
 package com.lucertola.ratatouille.ui.pages
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,19 +24,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 /**
  * Return a RecipeDialog ( a view on a recipe ).
  * @param recipe The recipe to display.
- * @param onDismissRequest The callback to invoke when the dialog is dismissed.
  * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
+ * @param onEditRecipe The callback to invoke when the recipe is edited.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewRecipePage(
     recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
 ) {
+    val textColor = if (isSystemInDarkTheme()) {
+        Color.White
+    } else {
+        Color.Black
+    }
+
     Scaffold(content = {
         Column(
             modifier = Modifier
@@ -49,7 +56,7 @@ fun ViewRecipePage(
                     .fillMaxWidth(1f),
                 colors = CardDefaults.cardColors(
                     contentColor = MaterialTheme.colorScheme.onSurface,
-                    containerColor = CardBackgroundLight,
+                    containerColor = if (isSystemInDarkTheme()) CardBackgroundDark else CardBackgroundLight,
                 ),
                 elevation = CardDefaults.elevatedCardElevation(4.dp),
             ) {
@@ -57,7 +64,6 @@ fun ViewRecipePage(
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(1f)
-                        .background(CardBackgroundLight)
                 ) {
                     // add a text with name and h1
                     Column(
@@ -96,7 +102,7 @@ fun ViewRecipePage(
                                 contentColor = Color.Black,
                             )
                         ) {
-                            Text("Modifica")
+                            Text("Modifica", color = textColor)
                         }
                         Button(
                             onClick = { onDeleteRecipe(recipe) },
@@ -105,7 +111,7 @@ fun ViewRecipePage(
                                 contentColor = Color.Black,
                             )
                         ) {
-                            Text("Cancella")
+                            Text("Cancella", color = textColor)
                         }
                     }
                 }

@@ -65,7 +65,6 @@ class RatatouilleViewModel(
         }
         shoppingIngredientsStore.saveShoppingIngredients(shoppingIngredients)
     }
-
     fun removeIngredientFromShoppingList(ingredient: Ingredient) {
         shoppingIngredients.remove(ingredient)
         shoppingIngredientsStore.saveShoppingIngredients(shoppingIngredients)
