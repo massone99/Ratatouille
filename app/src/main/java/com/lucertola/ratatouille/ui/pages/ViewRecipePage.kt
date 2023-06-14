@@ -80,7 +80,8 @@ object ViewRecipePage {
                         Text("\n")
                         Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
                         Text(
-                            recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
+                            if (recipe.ingredients.isEmpty()) "Nessun ingrediente specificato"
+                            else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
                             style = MaterialTheme.typography.bodySmall
                         )
 
