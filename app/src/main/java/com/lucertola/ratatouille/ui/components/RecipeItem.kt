@@ -6,7 +6,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -27,6 +30,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Recipe
@@ -46,9 +50,7 @@ object RecipeItem {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun RecipeItem(
-        recipe: Recipe,
-        viewModel: RatatouilleViewModel,
-        onViewRecipe: (Recipe) -> Unit
+        recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (Recipe) -> Unit
     ) {
         val haptic = LocalHapticFeedback.current
         val cardBackgroundColor = if (isSystemInDarkTheme()) {
@@ -73,13 +75,15 @@ object RecipeItem {
                 showDialog, cardBackgroundColor, recipe, viewModel
             )
         }
-
         Card(
             modifier = Modifier
                 .clip(shape)
                 .padding(8.dp)
+                .height(180.dp)
                 .combinedClickable(
-                    onClick = {},
+                    onClick = {
+                        onViewRecipe(recipe)
+                    },
                     onLongClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         showDialog.value = true
@@ -93,16 +97,18 @@ object RecipeItem {
             shape = shape,
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     text = recipe.name,
-                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     modifier = Modifier.padding(8.dp),
                 )
                 val emptyIngredients = recipe.ingredients.isEmpty()
@@ -110,17 +116,24 @@ object RecipeItem {
                     if (emptyIngredients) "Nessun ingrediente specificato"
                     else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
                     style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
                     fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
-                    onClick = { onViewRecipe(recipe) }, colors = ButtonDefaults.buttonColors(
+                    onClick = { onViewRecipe(recipe) },
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = if (isSystemInDarkTheme()) {
                             ButtonBackgroundDark
                         } else {
                             ButtonBackgroundLight
                         },
                         contentColor = Color.Black,
-                    ), modifier = Modifier.padding(8.dp)
+                    ),
+                    modifier = Modifier.padding(8.dp)
                 ) {
                     Text("Apri", color = textColor)
                 }
