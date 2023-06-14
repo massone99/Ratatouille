@@ -18,6 +18,8 @@ import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.ingredients.PendingIngredientRow
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
@@ -143,18 +145,26 @@ fun RecipeForm(
                             editedRecipe.id = recipe.id
                             onFormResult(editedRecipe)
                         }, colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            containerColor = if (isSystemInDarkTheme()) {
+                                ButtonBackgroundDark
+                            } else {
+                                ButtonBackgroundLight
+                            },
                             contentColor = Color.Black,
                         ), content = {
-                            Text(text = "Conferma", color = textColor)
+                            Text(text = "Conferma", color = Color.Black)
                         })
                         Button(onClick = {
                             navController.popBackStack()
                         }, colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            containerColor = if (isSystemInDarkTheme()) {
+                                ButtonBackgroundDark
+                            } else {
+                                ButtonBackgroundLight
+                            },
                             contentColor = Color.Black,
                         ), content = {
-                            Text(text = "Annulla", color = textColor)
+                            Text(text = "Annulla", color = Color.Black)
                         })
                     }
                 }

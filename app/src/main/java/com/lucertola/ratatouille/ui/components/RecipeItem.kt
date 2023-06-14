@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.components.ShoppingDialog.ShoppingDialog
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
@@ -107,11 +109,15 @@ fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (R
             )
             Button(
                 onClick = { onViewRecipe(recipe) }, colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    containerColor = if (isSystemInDarkTheme()) {
+                        ButtonBackgroundDark
+                    } else {
+                        ButtonBackgroundLight
+                    },
                     contentColor = Color.Black,
                 ), modifier = Modifier.padding(8.dp)
             ) {
-                Text("Apri", color = textColor)
+                Text("Apri", color = Color.Black)
             }
         }
     }

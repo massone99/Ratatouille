@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.ui.theme.PastelYellowDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
 
 object ShoppingDialog {
     @Composable
@@ -53,8 +53,8 @@ object ShoppingDialog {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = PastelYellowDark,
-                        cursorColor = PastelYellowDark,
+                        focusedBorderColor = ButtonBackgroundDark,
+                        cursorColor = ButtonBackgroundDark,
                     ),
                 )
             }
