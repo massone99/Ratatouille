@@ -1,6 +1,7 @@
 package com.lucertola.ratatouille.ui.components
 
 import RatatouilleViewModel
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 
 object ShoppingDialog {
     @Composable
@@ -36,6 +38,7 @@ object ShoppingDialog {
         viewModel: RatatouilleViewModel
     ) {
         var quantity by remember { mutableStateOf("0") }
+        val textColor = if (isSystemInDarkTheme()) Color.Black else Color.White
         AlertDialog(onDismissRequest = { showDialog.value = false }, title = {
             Text(
                 text = "Compra ingredienti ricetta",
@@ -53,8 +56,10 @@ object ShoppingDialog {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = ButtonBackgroundDark,
-                        cursorColor = ButtonBackgroundDark,
+                        textColor = MaterialTheme.colorScheme.onSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.onSurface,
                     ),
                 )
             }
@@ -76,8 +81,8 @@ object ShoppingDialog {
                     showDialog.value = false
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = Color.Black,
+                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                    contentColor = textColor,
                 ),
             ) {
                 Text(text = "Aggiungi")
@@ -87,8 +92,8 @@ object ShoppingDialog {
                 onClick = {
                     showDialog.value = false
                 }, colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = Color.Black,
+                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                    contentColor = textColor,
                 )
             ) {
                 Text(text = "Annulla")

@@ -37,87 +37,93 @@ import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
 
-/**
- * Returns a single recipe.
- * @param recipe The recipe to display.
- * @param onViewRecipe The callback to invoke when a recipe is selected.
- */
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun RecipeItem(recipe: Recipe, viewModel: RatatouilleViewModel, onViewRecipe: (Recipe) -> Unit) {
-    val haptic = LocalHapticFeedback.current
-    val cardBackgroundColor = if (isSystemInDarkTheme()) {
-        CardBackgroundDark
-    } else {
-        CardBackgroundLight
-    }
-
-    val textColor = if (isSystemInDarkTheme()) {
-        Color.White
-    } else {
-        Color.Black
-    }
-
-    val shape = RoundedCornerShape(13.dp)
-
-    // Add this line to manage the dialog state
-    val showDialog = remember { mutableStateOf(false) }
-
-    if (showDialog.value) {
-        ShoppingDialog(
-            showDialog, cardBackgroundColor, recipe, viewModel
-        )
-    }
-
-    Card(
-        modifier = Modifier
-            .clip(shape)
-            .padding(8.dp)
-            .combinedClickable(
-                onClick = {},
-                onLongClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    showDialog.value = true
-                },
-            ),
-        colors = CardDefaults.cardColors(
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            containerColor = cardBackgroundColor,
-        ),
-        elevation = CardDefaults.elevatedCardElevation(),
-        shape = shape,
+object RecipeItem {
+    /**
+     * Returns a single recipe.
+     * @param recipe The recipe to display.
+     * @param onViewRecipe The callback to invoke when a recipe is selected.
+     */
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun RecipeItem(
+        recipe: Recipe,
+        viewModel: RatatouilleViewModel,
+        onViewRecipe: (Recipe) -> Unit
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Text(
-                text = recipe.name,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                fontSize = 17.sp,
-                modifier = Modifier.padding(8.dp),
+        val haptic = LocalHapticFeedback.current
+        val cardBackgroundColor = if (isSystemInDarkTheme()) {
+            CardBackgroundDark
+        } else {
+            CardBackgroundLight
+        }
+
+        val textColor = if (isSystemInDarkTheme()) {
+            Color.Black
+        } else {
+            Color.White
+        }
+
+        val shape = RoundedCornerShape(13.dp)
+
+        // Add this line to manage the dialog state
+        val showDialog = remember { mutableStateOf(false) }
+
+        if (showDialog.value) {
+            ShoppingDialog(
+                showDialog, cardBackgroundColor, recipe, viewModel
             )
-            val emptyIngredients = recipe.ingredients.isEmpty()
-            Text(
-                if (emptyIngredients) "Nessun ingrediente specificato"
-                else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
-                style = MaterialTheme.typography.bodySmall,
-                fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
-            )
-            Button(
-                onClick = { onViewRecipe(recipe) }, colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSystemInDarkTheme()) {
-                        ButtonBackgroundDark
-                    } else {
-                        ButtonBackgroundLight
+        }
+
+        Card(
+            modifier = Modifier
+                .clip(shape)
+                .padding(8.dp)
+                .combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showDialog.value = true
                     },
-                    contentColor = Color.Black,
-                ), modifier = Modifier.padding(8.dp)
+                ),
+            colors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = cardBackgroundColor,
+            ),
+            elevation = CardDefaults.elevatedCardElevation(),
+            shape = shape,
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
-                Text("Apri", color = Color.Black)
+                Text(
+                    text = recipe.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    fontSize = 17.sp,
+                    modifier = Modifier.padding(8.dp),
+                )
+                val emptyIngredients = recipe.ingredients.isEmpty()
+                Text(
+                    if (emptyIngredients) "Nessun ingrediente specificato"
+                    else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
+                    style = MaterialTheme.typography.bodySmall,
+                    fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
+                )
+                Button(
+                    onClick = { onViewRecipe(recipe) }, colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isSystemInDarkTheme()) {
+                            ButtonBackgroundDark
+                        } else {
+                            ButtonBackgroundLight
+                        },
+                        contentColor = Color.Black,
+                    ), modifier = Modifier.padding(8.dp)
+                ) {
+                    Text("Apri", color = textColor)
+                }
             }
         }
     }

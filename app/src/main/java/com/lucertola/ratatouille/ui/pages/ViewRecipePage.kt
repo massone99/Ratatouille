@@ -20,114 +20,104 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
-/**
- * Return a RecipeDialog ( a view on a recipe ).
- * @param recipe The recipe to display.
- * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
- * @param onEditRecipe The callback to invoke when the recipe is edited.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ViewRecipePage(
-    recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
-) {
-    val textColor = if (isSystemInDarkTheme()) {
-        Color.White
-    } else {
-        Color.Black
-    }
+object ViewRecipePage {
+    /**
+     * Return a RecipeDialog ( a view on a recipe ).
+     * @param recipe The recipe to display.
+     * @param onDeleteRecipe The callback to invoke when the recipe is deleted.
+     * @param onEditRecipe The callback to invoke when the recipe is edited.
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ViewRecipePage(
+        recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
+    ) {
+        val textColor = if (isSystemInDarkTheme()) {
+            Color.Black
+        } else {
+            Color.White
+        }
 
-    Scaffold(content = {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(1f)
-        ) {
-            Card(
+        Scaffold(content = {
+            Column(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(1f),
-                colors = CardDefaults.cardColors(
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    containerColor = if (isSystemInDarkTheme()) CardBackgroundDark else CardBackgroundLight,
-                ),
-                elevation = CardDefaults.elevatedCardElevation(4.dp),
+                    .padding(it)
+                    .fillMaxWidth(1f)
             ) {
-                Column(
+                Card(
                     modifier = Modifier
                         .padding(16.dp)
-                        .fillMaxWidth(1f)
+                        .fillMaxWidth(1f),
+                    colors = CardDefaults.cardColors(
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        containerColor = if (isSystemInDarkTheme()) CardBackgroundDark else CardBackgroundLight,
+                    ),
+                    elevation = CardDefaults.elevatedCardElevation(4.dp),
                 ) {
-                    // add a text with name and h1
                     Column(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
-                    Text(recipe.description, style = MaterialTheme.typography.bodySmall)
-                    Text("\n")
-                    Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
-                    Text(
-                        recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
-                        style = MaterialTheme.typography.bodySmall
-                    )
-
-
-                    // add some space between the text and the buttons
-                    Spacer(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .height(8.dp)
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                            .padding(16.dp)
+                            .fillMaxWidth(1f)
                     ) {
-                        Button(
-                            onClick = { onEditRecipe(recipe) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = Color.Black,
-                            )
+                        // add a text with name and h1
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text("Modifica", color = textColor)
+                            Text(recipe.name, style = MaterialTheme.typography.headlineMedium)
                         }
-                        Button(
-                            onClick = { onDeleteRecipe(recipe) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = Color.Black,
-                            )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text("Descrizione:", style = MaterialTheme.typography.labelLarge)
+                        Text(recipe.description, style = MaterialTheme.typography.bodySmall)
+                        Text("\n")
+                        Text("Ingredienti:", style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            recipe.ingredients.joinToString(separator = "\n") { "${it.name} - ${it.grams}gr" },
+                            style = MaterialTheme.typography.bodySmall
+                        )
+
+
+                        // add some space between the text and the buttons
+                        Spacer(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .height(8.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
                         ) {
-                            Text("Cancella", color = textColor)
+                            Button(
+                                onClick = { onEditRecipe(recipe) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                                    contentColor = Color.Black,
+                                )
+                            ) {
+                                Text("Modifica", color = textColor)
+                            }
+                            Button(
+                                onClick = { onDeleteRecipe(recipe) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                                    contentColor = Color.Black,
+                                )
+                            ) {
+                                Text("Cancella", color = textColor)
+                            }
                         }
                     }
                 }
             }
-        }
-    })
-}
-
-@Composable
-@Preview
-fun ViewRecipePagePreview() {
-    ViewRecipePage(recipe = Recipe(
-        name = "Pasta al pomodoro",
-        description = "Pasta al pomodoro",
-        ingredients = listOf(
-            Ingredient(name = "Pasta", grams = "100"),
-        ),
-    ), onDeleteRecipe = {}, onEditRecipe = {})
+        })
+    }
 }

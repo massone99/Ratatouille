@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.ui.components.RecipeItem
+import com.lucertola.ratatouille.ui.components.RecipeItem.RecipeItem
 
 
 /**

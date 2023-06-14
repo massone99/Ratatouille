@@ -15,12 +15,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lucertola.ratatouille.ui.home.HomeBottomAppBar
-import com.lucertola.ratatouille.ui.home.HomeTopAppBar
+import com.lucertola.ratatouille.ui.home.HomeTopAppBar.HomeTopAppBar
 import com.lucertola.ratatouille.ui.pages.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage
 import com.lucertola.ratatouille.ui.pages.RecipesList
 import com.lucertola.ratatouille.ui.pages.ShoppingPage.ShoppingPage
-import com.lucertola.ratatouille.ui.pages.ViewRecipePage
+import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
 
 const val HOME = "RecipesListPage"
 const val VIEW_RECIPE = "ViewRecipePage"
@@ -35,7 +35,7 @@ object RecipeApp {
         val navController = rememberNavController()
 
         Scaffold(topBar = {
-            HomeTopAppBar(navController)
+            HomeTopAppBar(navController, ratatouilleViewModel)
         }, bottomBar = {
             val backgroundColor = if (isSystemInDarkTheme()) {
                 Color.Black // Set dark theme color
