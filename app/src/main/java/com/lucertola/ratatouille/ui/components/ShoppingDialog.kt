@@ -1,6 +1,7 @@
 package com.lucertola.ratatouille.ui.components
 
 import RatatouilleViewModel
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -77,6 +78,9 @@ object ShoppingDialog {
                             ingredient
                         }
                     }
+                    Log.d("ShoppingDialog", "ingredientsToBuy: $ingredientsToBuy")
+
+
                     viewModel.addShoppingIngredients(ingredientsToBuy)
                     showDialog.value = false
                 },

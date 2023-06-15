@@ -34,8 +34,10 @@ object ShoppingPage {
     @Composable
     fun ShoppingPage(ingredients: List<Ingredient>, viewModel: RatatouilleViewModel) {
         val checkedIngredients = remember { mutableStateMapOf<Ingredient, Boolean>() }
-        ingredients.forEach { ingredient ->
-            if (ingredient !in checkedIngredients) {
+
+        ingredients.distinctBy { it.id }.forEach { ingredient ->
+            // if no ingredient with it.id is present in the map, add it
+            if (!checkedIngredients.containsKey(ingredient)) {
                 checkedIngredients[ingredient] = false
             }
         }
@@ -95,6 +97,7 @@ object ShoppingPage {
             })
             Spacer(modifier = Modifier.width(8.dp))
             Text(
+                // add the id of the ingredient to the text to make it unique
                 text = "${ingredient.name} ${if (ingredient.grams != "") "(${ingredient.grams} gr)" else ""}",
                 style = if (isIngredientChecked) MaterialTheme.typography.bodyLarge.copy(
                     textDecoration = TextDecoration.LineThrough

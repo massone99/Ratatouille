@@ -10,8 +10,10 @@ class ShoppingIngredientsStore(context: Context) {
         context.getSharedPreferences("RecipesStore", Context.MODE_PRIVATE)
 
     fun saveShoppingIngredients(shoppingIngredients: List<Ingredient>) {
+        // make a distinct on the ids to avoid duplicates
+        val distinctShoppingIngredients = shoppingIngredients.distinctBy { it.id }
         val editor = sharedPreferences.edit()
-        val json = Gson().toJson(shoppingIngredients)
+        val json = Gson().toJson(distinctShoppingIngredients)
         editor.putString("shoppingIngredients", json)
         editor.apply()
     }

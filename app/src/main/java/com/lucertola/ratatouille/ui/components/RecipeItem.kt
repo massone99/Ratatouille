@@ -1,3 +1,5 @@
+@file:Suppress("UNNECESSARY_SAFE_CALL")
+
 package com.lucertola.ratatouille.ui.components
 
 import RatatouilleViewModel
@@ -105,7 +107,7 @@ object RecipeItem {
                     fontSize = 18.sp,
                     modifier = Modifier.padding(8.dp),
                 )
-                val emptyIngredients = recipe.ingredients.isEmpty()
+                val emptyIngredients = recipe.ingredients?.isEmpty()
                 Text(
                     if (emptyIngredients) "Nessun ingrediente specificato"
                     else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "- " + it.grams + "gr"}" },

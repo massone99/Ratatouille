@@ -7,6 +7,7 @@ import com.lucertola.ratatouille.data.Ingredient
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.data.store.RecipesStore
 import com.lucertola.ratatouille.data.store.ShoppingIngredientsStore
+import java.util.UUID
 
 class RatatouilleViewModel(
     Application: Application
@@ -79,20 +80,32 @@ class RatatouilleViewModel(
         }
     }
 
-    fun addShoppingIngredients(ingredients: List<Ingredient>) {
-        // if an ingredient is already in the shopping list, we don't add it again but only add the grams
-        ingredients.forEach { ingredient ->
-            val existingIngredient =
-                shoppingIngredients.find { it.name.lowercase() == ingredient.name.lowercase() }
-            if (existingIngredient != null && existingIngredient.grams != ingredient.grams) {
+    fun addShoppingIngredients(shoppingIngredients: List<Ingredient>) {
+        Log.d("RatatouilleViewModel", "addShoppingIngredients: $shoppingIngredients")
+
+        shoppingIngredients.forEach { ingredientToAdd ->
+            val existingIngredient = this.shoppingIngredients.find {
+                haveSameNameAndGrams(it, ingredientToAdd)
+            }
+            if (existingIngredient != null && existingIngredient.grams.isNotEmpty() && ingredientToAdd.grams.isNotEmpty()) {
                 existingIngredient.grams =
-                    (ingredient.grams.toInt() + existingIngredient.grams.toInt()).toString()
+                    (ingredientToAdd.grams.toInt() + existingIngredient.grams.toInt()).toString()
             } else {
-                shoppingIngredients.add(ingredient)
+                // Create a new ingredient with a unique ID
+                val newIngredient =
+                    Ingredient(name = ingredientToAdd.name, grams = ingredientToAdd.grams)
+                newIngredient.id = UUID.randomUUID().toString()
+                this.shoppingIngredients.add(newIngredient)
             }
         }
-        shoppingIngredientsStore.saveShoppingIngredients(shoppingIngredients)
+        shoppingIngredientsStore.saveShoppingIngredients(this.shoppingIngredients)
     }
+
+    private fun haveSameNameAndGrams(
+        it: Ingredient,
+        ingredientToAdd: Ingredient
+    ) = it.name.lowercase() == ingredientToAdd.name.lowercase() &&
+            it.grams == ingredientToAdd.grams
 
     fun removeIngredientFromShoppingList(ingredient: Ingredient) {
         shoppingIngredients.remove(ingredient)
