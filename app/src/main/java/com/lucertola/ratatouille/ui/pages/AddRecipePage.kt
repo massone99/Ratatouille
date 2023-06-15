@@ -8,13 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.ui.components.RecipeForm.RecipeForm
+import com.lucertola.ratatouille.ui.components.RecipeForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecipePage(
-    onAddRecipe: (Recipe) -> Unit,
-    navController: NavController
+    onAddRecipe: (Recipe) -> Unit, navController: NavController
 ) {
     val recipe = Recipe("", "", listOf())
     Scaffold {
