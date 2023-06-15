@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction.Companion
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.components.RecipeItem.RecipeItem
@@ -58,15 +59,25 @@ fun RecipesList(
                 singleLine = true
             )
         }
-        LazyVerticalGrid(
-            columns = gridCells,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            items(recipes.size) { index ->
-                RecipeItem(recipes[index], viewModel, onViewRecipe)
+        if (recipes.isNotEmpty()) {
+            LazyVerticalGrid(
+                columns = gridCells,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                items(recipes.size) { index ->
+                    RecipeItem(recipes[index], viewModel, onViewRecipe)
+                }
             }
+        } else {
+            Text(
+                textAlign = TextAlign.Center,
+                text = "Nessuna ricetta trovata!\nAggiungine una premendo il pulsante +",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            )
         }
     }
 }
