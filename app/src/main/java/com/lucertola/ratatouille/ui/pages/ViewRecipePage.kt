@@ -39,12 +39,6 @@ object ViewRecipePage {
     fun ViewRecipePage(
         recipe: Recipe, onDeleteRecipe: (Recipe) -> Unit, onEditRecipe: (Recipe) -> Unit
     ) {
-        val textColor = if (isSystemInDarkTheme()) {
-            Color.Black
-        } else {
-            Color.White
-        }
-
         Scaffold(content = {
             Column(
                 modifier = Modifier
@@ -104,7 +98,7 @@ object ViewRecipePage {
                                     contentColor = Color.Black,
                                 )
                             ) {
-                                Text("Modifica", color = textColor)
+                                Text("Modifica")
                             }
                             Button(
                                 onClick = { onDeleteRecipe(recipe) },
@@ -113,7 +107,7 @@ object ViewRecipePage {
                                     contentColor = Color.Black,
                                 )
                             ) {
-                                Text("Cancella", color = textColor)
+                                Text("Cancella")
                             }
                         }
                     }

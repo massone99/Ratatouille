@@ -59,12 +59,6 @@ object RecipeItem {
             CardBackgroundLight
         }
 
-        val textColor = if (isSystemInDarkTheme()) {
-            Color.Black
-        } else {
-            Color.White
-        }
-
         val shape = RoundedCornerShape(13.dp)
 
         // Add this line to manage the dialog state
@@ -135,7 +129,7 @@ object RecipeItem {
                     ),
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    Text("Apri", color = textColor)
+                    Text("Apri")
                 }
             }
         }
