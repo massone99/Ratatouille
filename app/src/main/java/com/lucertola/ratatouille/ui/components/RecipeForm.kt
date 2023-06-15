@@ -24,7 +24,6 @@ import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeForm(
     title: String, // title to be shown on the form
@@ -42,11 +41,7 @@ fun RecipeForm(
 
     BackHandler(
         onBack = confirmEvent(
-            name,
-            description,
-            ingredients,
-            recipe,
-            onFormResult
+            name, description, ingredients, recipe, onFormResult
         )
     )
 
@@ -109,16 +104,9 @@ fun RecipeFormLayout(
                 NameField(name, onNameChange)
                 DescriptionField(description, onDescriptionChange)
                 IngredientList(ingredients, onIngredientsChange)
-                ConfirmationButtons(
-                    onConfirmClick = confirmEvent(
-                        name,
-                        description,
-                        ingredients,
-                        recipe,
-                        onFormResult
-                    ),
-                    onCancelClick = { navController.popBackStack() }
-                )
+                ConfirmationButtons(onConfirmClick = confirmEvent(
+                    name, description, ingredients, recipe, onFormResult
+                ), onCancelClick = { navController.popBackStack() })
             }
         }
     }
@@ -167,33 +155,21 @@ fun IngredientList(ingredients: List<Ingredient>, onIngredientsChange: (List<Ing
             var ingrName by remember { mutableStateOf(ingredient.name) }
             var ingrGrams by remember { mutableStateOf(ingredient.grams) }
 
-            PendingIngredientRow(
-                ingredientToRender = ingredient,
-                onNameChange = { newIngrName ->
-                    ingrName = newIngrName
-                    onIngredientsChange(
-                        ingredients.mapIndexed { idx, ingr ->
-                            if (idx == idxUpdatedIngredient) ingr.copy(name = newIngrName) else ingr
-                        }
-                    )
-                },
-                onGramsChange = { newIngrGrams ->
-                    ingrGrams = newIngrGrams
-                    onIngredientsChange(
-                        ingredients.mapIndexed { idx, ingr ->
-                            if (idx == idxUpdatedIngredient) ingr.copy(grams = newIngrGrams) else ingr
-                        }
-                    )
-                },
-                onAddClick = {
-                    onIngredientsChange(ingredients + Ingredient("", ""))
-                },
-                onDeleteClick = {
-                    onIngredientsChange(
-                        ingredients.filterIndexed { idx, _ -> idx != idxUpdatedIngredient }
-                    )
-                },
-                isLast = idxUpdatedIngredient == ingredients.lastIndex
+            PendingIngredientRow(ingredientToRender = ingredient, onNameChange = { newIngrName ->
+                ingrName = newIngrName
+                onIngredientsChange(ingredients.mapIndexed { idx, ingr ->
+                    if (idx == idxUpdatedIngredient) ingr.copy(name = newIngrName) else ingr
+                })
+            }, onGramsChange = { newIngrGrams ->
+                ingrGrams = newIngrGrams
+                onIngredientsChange(ingredients.mapIndexed { idx, ingr ->
+                    if (idx == idxUpdatedIngredient) ingr.copy(grams = newIngrGrams) else ingr
+                })
+            }, onAddClick = {
+                onIngredientsChange(ingredients + Ingredient("", ""))
+            }, onDeleteClick = {
+                onIngredientsChange(ingredients.filterIndexed { idx, _ -> idx != idxUpdatedIngredient })
+            }, isLast = idxUpdatedIngredient == ingredients.lastIndex
             )
         }
     }
@@ -202,37 +178,28 @@ fun IngredientList(ingredients: List<Ingredient>, onIngredientsChange: (List<Ing
 @Composable
 fun ConfirmationButtons(onConfirmClick: () -> Unit, onCancelClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Button(
-            onClick = onConfirmClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSystemInDarkTheme()) {
-                    ButtonBackgroundDark
-                } else {
-                    ButtonBackgroundLight
-                },
-                contentColor = Color.Black,
-            ),
-            content = {
-                Text(text = "Conferma", color = Color.Black)
-            }
-        )
-        Button(
-            onClick = onCancelClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSystemInDarkTheme()) {
-                    ButtonBackgroundDark
-                } else {
-                    ButtonBackgroundLight
-                },
-                contentColor = Color.Black,
-            ),
-            content = {
-                Text(text = "Annulla", color = Color.Black)
-            }
-        )
+        Button(onClick = onConfirmClick, colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSystemInDarkTheme()) {
+                ButtonBackgroundDark
+            } else {
+                ButtonBackgroundLight
+            },
+            contentColor = Color.Black,
+        ), content = {
+            Text(text = "Conferma", color = Color.Black)
+        })
+        Button(onClick = onCancelClick, colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSystemInDarkTheme()) {
+                ButtonBackgroundDark
+            } else {
+                ButtonBackgroundLight
+            },
+            contentColor = Color.Black,
+        ), content = {
+            Text(text = "Annulla", color = Color.Black)
+        })
     }
 }
 
