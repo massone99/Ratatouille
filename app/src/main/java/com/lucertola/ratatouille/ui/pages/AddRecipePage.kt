@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.lucertola.ratatouille.data.Recipe
-import com.lucertola.ratatouille.ui.components.RecipeForm
+import com.lucertola.ratatouille.ui.components.RecipeForm.RecipeForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

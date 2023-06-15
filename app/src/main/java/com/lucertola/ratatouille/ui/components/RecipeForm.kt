@@ -1,5 +1,6 @@
 package com.lucertola.ratatouille.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,152 +24,170 @@ import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RecipeForm(
-    title: String, // title to be shown on the form
-    recipe: Recipe, // the recipe data to prepopulate the form
-    onFormResult: (Recipe) -> Unit, // callback when the form is submitted
-    navController: NavController
-) {
-
-    var name by remember {
-        mutableStateOf(recipe.name)
-    }
-    var description by remember {
-        mutableStateOf(recipe.description)
-    }
-    var ingredients by remember {
-        mutableStateOf(recipe.ingredients)
-    }
-
-    if (ingredients.isEmpty()) {
-        ingredients = ingredients + Ingredient("", "")
-    }
-
-    // The layout structure of the form
-    val textColor = if (isSystemInDarkTheme()) {
-        Color.White
-    } else {
-        Color.Black
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .verticalScroll(
-                enabled = true, state = rememberScrollState()
-            )
+object RecipeForm {
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun RecipeForm(
+        title: String, // title to be shown on the form
+        recipe: Recipe, // the recipe data to prepopulate the form
+        onFormResult: (Recipe) -> Unit, // callback when the form is submitted
+        navController: NavController
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth() // fills the entire width of the parent
-                .padding(8.dp), // adds padding around the card
-            colors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                containerColor = if (isSystemInDarkTheme()) {
-                    CardBackgroundDark
-                } else {
-                    CardBackgroundLight
-                }
-            ),
-            elevation = CardDefaults.elevatedCardElevation(4.dp),
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp) // adds vertical spacing between the children of this column
-            ) {
-                // Title
-                Text(
-                    title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = textColor
-                )
-                // OutlineTextField for the recipe name
-                OutlinedTextField(value = name, onValueChange = {
-                    name = it
-                }, label = {
-                    Text(
-                        "Nome",
-                        color = textColor
-                    )
-                }, modifier = Modifier.fillMaxWidth()
-                )
-                // OutlineTextField for the recipe description
-                OutlinedTextField(value = description, onValueChange = {
-                    description = it
-                }, label = { Text("Descrizione") }, modifier = Modifier.fillMaxWidth()
-                )
-                // The list of ingredients
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // for each of the ingredients in the recipe create a PendingIngredientRow
-                    ingredients.forEachIndexed { idxUpdatedIngredient, ingredient ->
-                        var ingrName by remember { mutableStateOf(ingredient.name) }
-                        var ingrGrams by remember { mutableStateOf(ingredient.grams) }
+        var name by remember {
+            mutableStateOf(recipe.name)
+        }
+        var description by remember {
+            mutableStateOf(recipe.description)
+        }
+        var ingredients by remember {
+            mutableStateOf(recipe.ingredients)
+        }
 
-                        PendingIngredientRow(ingredientToRender = ingredient,
-                            onNameChange = { newIngrName ->
-                                ingrName = newIngrName
-                                ingredients = ingredients.mapIndexed { idx, ingr ->
-                                    // we propagate the change to the list of ingredients
-                                    if (idx == idxUpdatedIngredient) ingr.copy(name = newIngrName) else ingr
-                                }
-                            },
-                            onGramsChange = { newIngrGrams ->
-                                ingrGrams = newIngrGrams
-                                ingredients = ingredients.mapIndexed { idx, ingr ->
-                                    // we propagate the change to the list of ingredients
-                                    if (idx == idxUpdatedIngredient) ingr.copy(grams = newIngrGrams) else ingr
-                                }
-                            },
-                            onAddClick = {
-                                ingredients = ingredients + Ingredient("", "")
-                            },
-                            onDeleteClick = {
-                                ingredients =
-                                    ingredients.filterIndexed { idx, _ -> idx != idxUpdatedIngredient }
-                            })
+        if (ingredients.isEmpty()) {
+            ingredients = ingredients + Ingredient("", "")
+        }
+
+        BackHandler(
+            onBack = confirmEvent(
+                name,
+                description,
+                ingredients,
+                recipe,
+                onFormResult
+            )
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .verticalScroll(
+                    enabled = true, state = rememberScrollState()
+                )
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth() // fills the entire width of the parent
+                    .padding(8.dp), // adds padding around the card
+                colors = CardDefaults.cardColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = if (isSystemInDarkTheme()) {
+                        CardBackgroundDark
+                    } else {
+                        CardBackgroundLight
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                ),
+                elevation = CardDefaults.elevatedCardElevation(4.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp) // adds vertical spacing between the children of this column
+                ) {
+                    // Title
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.headlineMedium,
+                    )
+                    // OutlineTextField for the recipe name
+                    OutlinedTextField(value = name, onValueChange = {
+                        name = it
+                    }, label = {
+                        Text(
+                            "Nome",
+                        )
+                    }, modifier = Modifier.fillMaxWidth()
+                    )
+                    // OutlineTextField for the recipe description
+                    OutlinedTextField(value = description, onValueChange = {
+                        description = it
+                    }, label = { Text("Descrizione") }, modifier = Modifier.fillMaxWidth()
+                    )
+                    // The list of ingredients
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Button(onClick = {
-                            val editedRecipe = Recipe(name, description, ingredients)
-                            editedRecipe.id = recipe.id
-                            onFormResult(editedRecipe)
-                        }, colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSystemInDarkTheme()) {
-                                ButtonBackgroundDark
-                            } else {
-                                ButtonBackgroundLight
-                            },
-                            contentColor = Color.Black,
-                        ), content = {
-                            Text(text = "Conferma", color = Color.Black)
-                        })
-                        Button(onClick = {
-                            navController.popBackStack()
-                        }, colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSystemInDarkTheme()) {
-                                ButtonBackgroundDark
-                            } else {
-                                ButtonBackgroundLight
-                            },
-                            contentColor = Color.Black,
-                        ), content = {
-                            Text(text = "Annulla", color = Color.Black)
-                        })
+                        // for each of the ingredients in the recipe create a PendingIngredientRow
+                        ingredients.forEachIndexed { idxUpdatedIngredient, ingredient ->
+                            var ingrName by remember { mutableStateOf(ingredient.name) }
+                            var ingrGrams by remember { mutableStateOf(ingredient.grams) }
+
+                            PendingIngredientRow(ingredientToRender = ingredient,
+                                onNameChange = { newIngrName ->
+                                    ingrName = newIngrName
+                                    ingredients = ingredients.mapIndexed { idx, ingr ->
+                                        // we propagate the change to the list of ingredients
+                                        if (idx == idxUpdatedIngredient) ingr.copy(name = newIngrName) else ingr
+                                    }
+                                },
+                                onGramsChange = { newIngrGrams ->
+                                    ingrGrams = newIngrGrams
+                                    ingredients = ingredients.mapIndexed { idx, ingr ->
+                                        // we propagate the change to the list of ingredients
+                                        if (idx == idxUpdatedIngredient) ingr.copy(grams = newIngrGrams) else ingr
+                                    }
+                                },
+                                onAddClick = {
+                                    ingredients = ingredients + Ingredient("", "")
+                                },
+                                onDeleteClick = {
+                                    ingredients =
+                                        ingredients.filterIndexed { idx, _ -> idx != idxUpdatedIngredient }
+                                })
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Button(onClick = confirmEvent(
+                                name,
+                                description,
+                                ingredients,
+                                recipe,
+                                onFormResult
+                            ), colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isSystemInDarkTheme()) {
+                                    ButtonBackgroundDark
+                                } else {
+                                    ButtonBackgroundLight
+                                },
+                                contentColor = Color.Black,
+                            ), content = {
+                                Text(text = "Conferma", color = Color.Black)
+                            })
+                            Button(onClick = {
+                                navController.popBackStack()
+                            }, colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isSystemInDarkTheme()) {
+                                    ButtonBackgroundDark
+                                } else {
+                                    ButtonBackgroundLight
+                                },
+                                contentColor = Color.Black,
+                            ), content = {
+                                Text(text = "Annulla", color = Color.Black)
+                            })
+                        }
                     }
                 }
             }
         }
+    }
+
+    @Composable
+    private fun confirmEvent(
+        name: String,
+        description: String,
+        ingredients: List<Ingredient>,
+        recipe: Recipe,
+        onFormResult: (Recipe) -> Unit
+    ): () -> Unit = {
+        val editedRecipe = Recipe(name, description, ingredients)
+        editedRecipe.id = recipe.id
+        onFormResult(editedRecipe)
     }
 }
