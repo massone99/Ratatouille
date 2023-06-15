@@ -108,7 +108,7 @@ object RecipeItem {
                 val emptyIngredients = recipe.ingredients.isEmpty()
                 Text(
                     if (emptyIngredients) "Nessun ingrediente specificato"
-                    else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "-" + it.grams + "gr"}" },
+                    else recipe.ingredients.joinToString(separator = "\n") { "${it.name}  ${if (it.grams.isBlank()) "" else "- " + it.grams + "gr"}" },
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     fontStyle = if (emptyIngredients) FontStyle.Italic else FontStyle.Normal,
