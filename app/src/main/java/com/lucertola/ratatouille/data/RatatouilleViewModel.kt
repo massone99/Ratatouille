@@ -24,6 +24,10 @@ class RatatouilleViewModel(
     val selectedRecipe = mutableStateOf<Recipe?>(null)
     val shoppingIngredients = mutableStateListOf<Ingredient>()
 
+    val isSorted = mutableStateOf(false)
+    private var lastSearchQuery = ""
+
+
     val isSearchBarVisible = mutableStateOf(false)
 
     init {
@@ -50,11 +54,16 @@ class RatatouilleViewModel(
      * Shows recipes that contain the given name
      */
     fun search(name: String) {
-        val filteredRecipes = recipesStore.getRecipes().filter { recipe ->
+        lastSearchQuery = name
+        val searchResults = recipesStore.getRecipes().filter { recipe ->
             recipe.name.contains(name, ignoreCase = true)
         }
         recipes.clear()
-        recipes.addAll(filteredRecipes)
+        if (isSorted.value) {
+            recipes.addAll(searchResults.sortedBy { it.name })
+        } else {
+            recipes.addAll(searchResults)
+        }
     }
 
     fun removeRecipe(recipe: Recipe) {
@@ -102,13 +111,17 @@ class RatatouilleViewModel(
     }
 
     private fun haveSameNameAndGrams(
-        it: Ingredient,
-        ingredientToAdd: Ingredient
-    ) = it.name.lowercase() == ingredientToAdd.name.lowercase() &&
-            it.grams == ingredientToAdd.grams
+        it: Ingredient, ingredientToAdd: Ingredient
+    ) = it.name.lowercase() == ingredientToAdd.name.lowercase() && it.grams == ingredientToAdd.grams
 
     fun removeIngredientFromShoppingList(ingredient: Ingredient) {
         shoppingIngredients.remove(ingredient)
         shoppingIngredientsStore.saveShoppingIngredients(shoppingIngredients)
+    }
+
+    fun toggleSortRecipes() {
+        isSorted.value = !isSorted.value
+        // Reapply the last search to update the sort order
+        search(lastSearchQuery)
     }
 }

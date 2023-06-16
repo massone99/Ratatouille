@@ -18,7 +18,7 @@ import com.lucertola.ratatouille.ui.home.HomeBottomAppBar
 import com.lucertola.ratatouille.ui.home.HomeTopAppBar.HomeTopAppBar
 import com.lucertola.ratatouille.ui.pages.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage
-import com.lucertola.ratatouille.ui.pages.RecipesList
+import com.lucertola.ratatouille.ui.pages.RecipesListPage
 import com.lucertola.ratatouille.ui.pages.ShoppingPage.ShoppingPage
 import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
 
@@ -57,7 +57,7 @@ object RecipeApp {
             ) {
                 NavHost(navController = navController, startDestination = HOME) {
                     composable(HOME) {
-                        RecipesList(
+                        RecipesListPage(
                             ratatouilleViewModel.recipes, viewModel = ratatouilleViewModel
                         ) { recipe ->
                             ratatouilleViewModel.selectedRecipe.value = recipe
