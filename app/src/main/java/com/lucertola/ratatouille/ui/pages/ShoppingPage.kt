@@ -29,80 +29,76 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Ingredient
 
-object ShoppingPage {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ShoppingPage(ingredients: List<Ingredient>, viewModel: RatatouilleViewModel) {
-        val checkedIngredients = remember { mutableStateMapOf<Ingredient, Boolean>() }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShoppingPage(ingredients: List<Ingredient>, viewModel: RatatouilleViewModel) {
+    val checkedIngredients = remember { mutableStateMapOf<Ingredient, Boolean>() }
 
-        ingredients.distinctBy { it.id }.forEach { ingredient ->
-            // if no ingredient with it.id is present in the map, add it
-            if (!checkedIngredients.containsKey(ingredient)) {
-                checkedIngredients[ingredient] = false
-            }
+    ingredients.distinctBy { it.id }.forEach { ingredient ->
+        // if no ingredient with it.id is present in the map, add it
+        if (!checkedIngredients.containsKey(ingredient)) {
+            checkedIngredients[ingredient] = false
         }
-
-        val anyChecked = checkedIngredients.values.any { it }
-
-        Scaffold(
-            content = {
-                Column(modifier = Modifier.padding(it)) {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize()
-                    ) {
-                        if (ingredients.isNotEmpty()) {
-                            LazyColumn(modifier = Modifier.weight(1f)) {
-                                items(ingredients.size) { index ->
-                                    ShoppingItem(ingredients[index], checkedIngredients)
-                                    Divider()
-                                }
-                            }
-                        } else {
-                            Text(
-                                textAlign = TextAlign.Center,
-                                text = "Nessun ingrediente da comprare!",
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier
-                                    .padding(vertical = 16.dp)
-                                    .fillMaxWidth()
-                            )
-                        }
-                    }
-                }
-            },
-            // Only show the button if at least one ingredient is checked
-            floatingActionButton = {
-                if (anyChecked) {
-                    FloatingActionButton(onClick = {
-                        // remove from the shopping list all the ingredients that are checked using the view model
-                        checkedIngredients.filter { it.value }.forEach { (ingredient, _) ->
-                            viewModel.removeIngredientFromShoppingList(ingredient)
-                        }
-                    }) {
-                        Icon(Icons.Default.Done, contentDescription = "Complete Shopping")
-                    }
-                }
-            }
-        )
     }
 
-    @Composable
-    fun ShoppingItem(ingredient: Ingredient, checkedIngredients: MutableMap<Ingredient, Boolean>) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            val isIngredientChecked = checkedIngredients[ingredient] ?: false
-            Checkbox(checked = isIngredientChecked, onCheckedChange = { isChecked ->
-                checkedIngredients[ingredient] = isChecked
-            })
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                // add the id of the ingredient to the text to make it unique
-                text = "${ingredient.name} ${if (ingredient.grams != "") "(${ingredient.grams} gr)" else ""}",
-                style = if (isIngredientChecked) MaterialTheme.typography.bodyLarge.copy(
-                    textDecoration = TextDecoration.LineThrough
-                ) else MaterialTheme.typography.bodyLarge
-            )
+    val anyChecked = checkedIngredients.values.any { it }
+
+    Scaffold(content = {
+        Column(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                if (ingredients.isNotEmpty()) {
+                    LazyColumn(modifier = Modifier.weight(1f)) {
+                        items(ingredients.size) { index ->
+                            ShoppingItem(ingredients[index], checkedIngredients)
+                            Divider()
+                        }
+                    }
+                } else {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "Nessun ingrediente da comprare!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            }
         }
+    },
+        // Only show the button if at least one ingredient is checked
+        floatingActionButton = {
+            if (anyChecked) {
+                FloatingActionButton(onClick = {
+                    // remove from the shopping list all the ingredients that are checked using the view model
+                    checkedIngredients.filter { it.value }.forEach { (ingredient, _) ->
+                        viewModel.removeIngredientFromShoppingList(ingredient)
+                    }
+                }) {
+                    Icon(Icons.Default.Done, contentDescription = "Complete Shopping")
+                }
+            }
+        })
+}
+
+@Composable
+fun ShoppingItem(ingredient: Ingredient, checkedIngredients: MutableMap<Ingredient, Boolean>) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        val isIngredientChecked = checkedIngredients[ingredient] ?: false
+        Checkbox(checked = isIngredientChecked, onCheckedChange = { isChecked ->
+            checkedIngredients[ingredient] = isChecked
+        })
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            // add the id of the ingredient to the text to make it unique
+            text = "${ingredient.name} ${if (ingredient.grams != "") "(${ingredient.grams} gr)" else ""}",
+            style = if (isIngredientChecked) MaterialTheme.typography.bodyLarge.copy(
+                textDecoration = TextDecoration.LineThrough
+            ) else MaterialTheme.typography.bodyLarge
+        )
     }
 }

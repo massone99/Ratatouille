@@ -16,16 +16,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lucertola.ratatouille.R
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
 import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
@@ -38,70 +38,96 @@ object ShoppingDialog {
         recipe: Recipe,
         viewModel: RatatouilleViewModel
     ) {
-        var quantity by remember { mutableStateOf("0") }
+        val quantity = remember { mutableStateOf("1") }
         val textColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+
         AlertDialog(onDismissRequest = { showDialog.value = false }, title = {
-            Text(
-                text = "Compra ingredienti ricetta",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            DialogTitle()
         }, text = {
-            Column {
-                Text(text = "Seleziona quante volte vuoi preparare la ricetta")
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = quantity,
-                    onValueChange = {
-                        quantity = it
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colorScheme.onSurface,
-                        focusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                        cursorColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                )
-            }
+            DialogContent(quantity, textColor)
         }, containerColor = cardBackgroundColor, confirmButton = {
-            Button(
-                onClick = {
-                    // Retrieve all the ingredients of the recipe
-                    val ingredients = recipe.ingredients
-                    // Create a list with the ingredients multiplied by the quantity
-                    val ingredientsToBuy = ingredients.map { ingredient ->
-                        if (quantity.isNotBlank() && ingredient.grams.isNotBlank()) {
-                            val grams = (ingredient.grams.toInt() * quantity.toInt()).toString()
-                            ingredient.copy(grams = grams)
-                        } else {
-                            ingredient
-                        }
-                    }
-                    Log.d("ShoppingDialog", "ingredientsToBuy: $ingredientsToBuy")
-
-
-                    viewModel.addShoppingIngredients(ingredientsToBuy)
-                    showDialog.value = false
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
-                    contentColor = textColor,
-                ),
-            ) {
-                Text(text = "Aggiungi")
-            }
+            ConfirmButton(quantity, recipe, viewModel, showDialog, textColor)
         }, dismissButton = {
-            Button(
-                onClick = {
-                    showDialog.value = false
-                }, colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
-                    contentColor = textColor,
-                )
-            ) {
-                Text(text = "Annulla")
-            }
+            DismissButton(showDialog, textColor)
         })
+    }
+
+    @Composable
+    fun DialogTitle() {
+        Text(
+            text = stringResource(R.string.shopping_dialog_title),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+
+    @Composable
+    fun DialogContent(quantity: MutableState<String>, textColor: Color) {
+        Column {
+            Text(text = "Seleziona quante volte vuoi preparare la ricetta")
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = quantity.value,
+                onValueChange = {
+                    quantity.value = it
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                ),
+            )
+        }
+    }
+
+    @Composable
+    fun ConfirmButton(
+        quantity: MutableState<String>,
+        recipe: Recipe,
+        viewModel: RatatouilleViewModel,
+        showDialog: MutableState<Boolean>,
+        textColor: Color
+    ) {
+        Button(
+            onClick = {
+                // Retrieve all the ingredients of the recipe
+                val ingredients = recipe.ingredients
+                // Create a list with the ingredients multiplied by the quantity
+                val ingredientsToBuy = ingredients.map { ingredient ->
+                    if (quantity.value.isNotBlank() && ingredient.grams.isNotBlank()) {
+                        val grams = (ingredient.grams.toInt() * quantity.value.toInt()).toString()
+                        ingredient.copy(grams = grams)
+                    } else {
+                        ingredient
+                    }
+                }
+                Log.d("ShoppingDialog", "ingredientsToBuy: $ingredientsToBuy")
+
+                viewModel.addShoppingIngredients(ingredientsToBuy)
+                showDialog.value = false
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                contentColor = textColor,
+            ),
+        ) {
+            Text(text = "Aggiungi")
+        }
+    }
+
+    @Composable
+    fun DismissButton(showDialog: MutableState<Boolean>, textColor: Color) {
+        Button(
+            onClick = {
+                showDialog.value = false
+            }, colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+                contentColor = textColor,
+            )
+        ) {
+            Text(text = "Annulla")
+        }
     }
 }

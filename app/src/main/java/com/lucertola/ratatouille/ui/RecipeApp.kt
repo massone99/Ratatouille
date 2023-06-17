@@ -19,7 +19,7 @@ import com.lucertola.ratatouille.ui.home.HomeTopAppBar.HomeTopAppBar
 import com.lucertola.ratatouille.ui.pages.AddRecipePage
 import com.lucertola.ratatouille.ui.pages.EditRecipePage
 import com.lucertola.ratatouille.ui.pages.RecipesListPage
-import com.lucertola.ratatouille.ui.pages.ShoppingPage.ShoppingPage
+import com.lucertola.ratatouille.ui.pages.ShoppingPage
 import com.lucertola.ratatouille.ui.pages.ViewRecipePage.ViewRecipePage
 
 const val HOME = "RecipesListPage"
@@ -33,7 +33,6 @@ object RecipeApp {
     @Composable
     fun RecipeApp(ratatouilleViewModel: RatatouilleViewModel) {
         val navController = rememberNavController()
-
         Scaffold(topBar = {
             HomeTopAppBar(navController, ratatouilleViewModel)
         }, bottomBar = {
@@ -47,7 +46,6 @@ object RecipeApp {
             } else {
                 Color.Black // Set light theme color
             }
-
             HomeBottomAppBar(backgroundColor, contentColor, navController)
         }) {
             Column(
@@ -55,46 +53,55 @@ object RecipeApp {
                     .padding(it)
                     .fillMaxWidth(1f)
             ) {
-                NavHost(navController = navController, startDestination = HOME) {
-                    composable(HOME) {
-                        RecipesListPage(
-                            ratatouilleViewModel.recipes, viewModel = ratatouilleViewModel
-                        ) { recipe ->
-                            ratatouilleViewModel.selectedRecipe.value = recipe
-                            navController.navigate(VIEW_RECIPE)
-                        }
-                    }
-                    composable(VIEW_RECIPE) {
-                        ratatouilleViewModel.selectedRecipe.value?.let { recipe ->
-                            ViewRecipePage(recipe, {
-                                ratatouilleViewModel.removeRecipe(recipe)
-                                navController.navigate(HOME)
-                            }) {
-                                navController.navigate(EDIT_RECIPE)
-                            }
-                        }
-                    }
-                    composable(ADD_RECIPE) {
-                        AddRecipePage(
-                            {
-                                ratatouilleViewModel.addRecipe(it)
-                                navController.navigate(HOME)
-                            }, navController
-                        )
-                    }
-                    composable(EDIT_RECIPE) {
-                        ratatouilleViewModel.selectedRecipe.value?.let { recipe ->
-                            EditRecipePage(recipe, {
-                                Log.d("RecipeApp", "EditRecipeIngredient: ${it.ingredients}")
-                                ratatouilleViewModel.editRecipe(it)
-                                navController.popBackStack()
-                            }, navController)
-                        }
-                    }
-                    composable(SHOPPING_PAGE) {
-                        ShoppingPage(ratatouilleViewModel.shoppingIngredients, ratatouilleViewModel)
+                AppNavHost(navController, ratatouilleViewModel)
+            }
+        }
+    }
+
+    @Composable
+    fun AppNavHost(navController: NavHostController, viewModel: RatatouilleViewModel) {
+        NavHost(navController = navController, startDestination = HOME) {
+            composable(HOME) {
+                RecipesListPage(
+                    viewModel.recipes, viewModel = viewModel
+                ) { recipe ->
+                    viewModel.selectedRecipe.value = recipe
+                    navController.navigate(VIEW_RECIPE)
+                }
+            }
+            composable(VIEW_RECIPE) {
+                viewModel.selectedRecipe.value?.let { recipe ->
+                    ViewRecipePage(recipe, {
+                        viewModel.removeRecipe(recipe)
+                        navController.navigate(HOME)
+                    }) {
+                        navController.navigate(EDIT_RECIPE)
                     }
                 }
+            }
+            composable(ADD_RECIPE) {
+                AddRecipePage(
+                    {
+                        if (it.name.isNotEmpty()) {
+                            viewModel.addRecipe(it)
+                        }
+                        navController.navigate(HOME)
+                    }, navController
+                )
+            }
+            composable(EDIT_RECIPE) {
+                viewModel.selectedRecipe.value?.let { recipe ->
+                    EditRecipePage(recipe, {
+                        Log.d("RecipeApp", "EditRecipeIngredient: ${it.ingredients}")
+                        if (it.name.isNotEmpty()) {
+                            viewModel.editRecipe(it)
+                        }
+                        navController.popBackStack()
+                    }, navController)
+                }
+            }
+            composable(SHOPPING_PAGE) {
+                ShoppingPage(viewModel.shoppingIngredients, viewModel)
             }
         }
     }
