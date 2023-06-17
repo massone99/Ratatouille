@@ -3,6 +3,7 @@ package com.lucertola.ratatouille.ui.home
 import ADD_RECIPE
 import RatatouilleViewModel
 import RecipeApp
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
@@ -14,7 +15,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
-import com.lucertola.ratatouille.ui.theme.Pink80
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 
 object HomeTopAppBar {
     @Composable
@@ -31,7 +33,11 @@ object HomeTopAppBar {
             }) {
                 // if viewModel.isSearchBarVisible.value is true color is Pink80 else White
                 if (viewModel.isSearchBarVisible.value) {
-                    Icon(Icons.Filled.Search, contentDescription = "Search", tint = Pink80)
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight
+                    )
                 } else {
                     Icon(Icons.Filled.Search, contentDescription = "Search")
                 }

@@ -2,11 +2,11 @@ package com.lucertola.ratatouille.ui.pages
 
 import RatatouilleViewModel
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.R
 import com.lucertola.ratatouille.data.Recipe
 import com.lucertola.ratatouille.ui.components.RecipeItem.RecipeItem
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
+import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
+import com.lucertola.ratatouille.ui.theme.customOutlinedTextFieldColors
 
 @Composable
 fun RecipesListPage(
@@ -77,7 +80,8 @@ fun SearchBar(viewModel: RatatouilleViewModel) {
         keyboardActions = KeyboardActions(onSearch = {
             viewModel.search(searchQuery)
         }),
-        singleLine = true
+        singleLine = true,
+        colors = customOutlinedTextFieldColors()
     )
 }
 
@@ -88,15 +92,16 @@ fun RecipeList(
     viewModel: RatatouilleViewModel,
     onViewRecipe: (Recipe) -> Unit
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(30.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         Spacer(modifier = Modifier.weight(1f)) // This will push the button to the end
         IconButton(onClick = { viewModel.toggleSortRecipes() }) {
             Icon(
                 painter = painterResource(id = R.drawable.sort_by_alpha),
                 tint = if (viewModel.isSorted.value) {
-                    MaterialTheme.colorScheme.primary
+                    if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight
                 } else {
                     MaterialTheme.colorScheme.onSurface
                 },

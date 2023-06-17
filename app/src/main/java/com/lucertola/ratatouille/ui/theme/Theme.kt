@@ -3,7 +3,10 @@ package com.lucertola.ratatouille.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -42,13 +45,22 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun customOutlinedTextFieldColors(): TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+    cursorColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+    focusedBorderColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+    unfocusedBorderColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+    focusedLabelColor = if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight,
+)
+
 @Composable
 fun RatatouilleTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    dynamicColor: Boolean = true, content: @Composable () -> Unit,
 ) {
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -68,8 +80,7 @@ fun RatatouilleTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        colorScheme = colorScheme, typography = Typography, content = content
     )
 }
+

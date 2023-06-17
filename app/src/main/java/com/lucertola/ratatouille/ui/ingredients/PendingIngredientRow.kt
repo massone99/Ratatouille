@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.lucertola.ratatouille.data.Ingredient
+import com.lucertola.ratatouille.ui.theme.customOutlinedTextFieldColors
 
 
 /**
@@ -64,7 +65,8 @@ fun PendingIngredientRow(
                 )
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+            colors = customOutlinedTextFieldColors()
         )
         OutlinedTextField(
             modifier = Modifier
@@ -80,7 +82,8 @@ fun PendingIngredientRow(
                 )
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = customOutlinedTextFieldColors()
         )
         // Add button will be displayed only on the last row
         val iconSize = 24.dp

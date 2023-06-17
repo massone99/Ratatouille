@@ -12,7 +12,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,7 +35,7 @@ object ShoppingDialog {
         showDialog: MutableState<Boolean>,
         cardBackgroundColor: Color,
         recipe: Recipe,
-        viewModel: RatatouilleViewModel
+        viewModel: RatatouilleViewModel,
     ) {
         val quantity = remember { mutableStateOf("1") }
         val textColor = if (isSystemInDarkTheme()) Color.Black else Color.White
@@ -66,6 +65,8 @@ object ShoppingDialog {
         Column {
             Text(text = "Seleziona quante volte vuoi preparare la ricetta")
             Spacer(modifier = Modifier.height(8.dp))
+            val textFieldColor =
+                if (isSystemInDarkTheme()) ButtonBackgroundDark else ButtonBackgroundLight
             OutlinedTextField(
                 value = quantity.value,
                 onValueChange = {
@@ -73,10 +74,9 @@ object ShoppingDialog {
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    focusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
-                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                    focusedBorderColor = textFieldColor,
+                    unfocusedBorderColor = textFieldColor,
+                    cursorColor = textFieldColor,
                 ),
             )
         }
@@ -88,7 +88,7 @@ object ShoppingDialog {
         recipe: Recipe,
         viewModel: RatatouilleViewModel,
         showDialog: MutableState<Boolean>,
-        textColor: Color
+        textColor: Color,
     ) {
         Button(
             onClick = {

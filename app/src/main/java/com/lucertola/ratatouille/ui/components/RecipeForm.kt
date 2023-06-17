@@ -25,6 +25,7 @@ import com.lucertola.ratatouille.ui.theme.ButtonBackgroundDark
 import com.lucertola.ratatouille.ui.theme.ButtonBackgroundLight
 import com.lucertola.ratatouille.ui.theme.CardBackgroundDark
 import com.lucertola.ratatouille.ui.theme.CardBackgroundLight
+import com.lucertola.ratatouille.ui.theme.customOutlinedTextFieldColors
 
 @Composable
 fun RecipeForm(
@@ -130,7 +131,8 @@ fun NameField(value: String, onValueChange: (String) -> Unit) {
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
         label = { Text("Nome") },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = customOutlinedTextFieldColors()
     )
 }
 
@@ -142,7 +144,8 @@ fun DescriptionField(value: String, onValueChange: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
         onValueChange = onValueChange,
         label = { Text("Descrizione") },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = customOutlinedTextFieldColors()
     )
 }
 
